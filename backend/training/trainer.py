@@ -1,0 +1,152 @@
+import uuid
+from typing import Dict, Any, Optional
+from algorithms import AlgorithmFactory
+from environments.environment_manager import EnvironmentManager
+
+
+class TrainingCoordinator:
+    """
+    Manages training sessions with UUID-based identification.
+
+    Handles session creation, training execution, and policy playback
+    in an algorithm-agnostic manner.
+    """
+
+    def __init__(self):
+        """Initialize training coordinator with empty session storage."""
+        self.sessions: Dict[str, Dict[str, Any]] = {}
+
+    def create_session(
+        self,
+        algorithm_name: str,
+        environment_name: str,
+        parameters: Dict[str, Any],
+        seed: Optional[int] = None
+    ) -> str:
+        """
+        Create a new training session.
+
+        Args:
+            algorithm_name: Name of the algorithm to use
+            environment_name: Name of the environment
+            parameters: Algorithm parameters
+            seed: Optional random seed
+
+        Returns:
+            Session ID (UUID string)
+
+        Raises:
+            ValueError: If algorithm or environment is invalid
+        """
+        # Create environment
+        env = EnvironmentManager.create_environment(environment_name, seed)
+
+        # Create algorithm instance
+        algorithm = AlgorithmFactory.create_algorithm(algorithm_name, env, parameters)
+
+        # Generate session ID
+        session_id = str(uuid.uuid4())
+
+        # Store session
+        self.sessions[session_id] = {
+            'algorithm': algorithm,
+            'environment': env,
+            'algorithm_name': algorithm_name,
+            'environment_name': environment_name,
+            'parameters': parameters,
+            'trained': False
+        }
+
+        return session_id
+
+    def train(
+        self,
+        session_id: str,
+        num_episodes: int,
+        callback: Optional[callable] = None
+    ) -> None:
+        """
+        Train the algorithm for a session.
+
+        Args:
+            session_id: Session UUID
+            num_episodes: Number of episodes to train
+            callback: Optional callback function for episode updates
+
+        Raises:
+            ValueError: If session ID is invalid
+        """
+        if session_id not in self.sessions:
+            raise ValueError(f"Session '{session_id}' not found")
+
+        session = self.sessions[session_id]
+        algorithm = session['algorithm']
+
+        # Train with callback
+        algorithm.train(num_episodes, callback)
+
+        # Mark as trained
+        session['trained'] = True
+
+    def play_policy(
+        self,
+        session_id: str,
+        callback: Optional[callable] = None
+    ) -> list:
+        """
+        Execute the learned policy.
+
+        Args:
+            session_id: Session UUID
+            callback: Optional callback for step updates
+
+        Returns:
+            List of frames from policy execution
+
+        Raises:
+            ValueError: If session ID is invalid or not trained
+        """
+        if session_id not in self.sessions:
+            raise ValueError(f"Session '{session_id}' not found")
+
+        session = self.sessions[session_id]
+
+        if not session['trained']:
+            raise ValueError(f"Session '{session_id}' has not been trained yet")
+
+        algorithm = session['algorithm']
+        return algorithm.play_policy(callback)
+
+    def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Get session data.
+
+        Args:
+            session_id: Session UUID
+
+        Returns:
+            Session dictionary or None if not found
+        """
+        return self.sessions.get(session_id)
+
+    def reset_all_sessions(self) -> None:
+        """Clear all sessions from memory."""
+        # Close all environments
+        for session in self.sessions.values():
+            env = session.get('environment')
+            if env:
+                env.close()
+
+        self.sessions.clear()
+
+    def session_exists(self, session_id: str) -> bool:
+        """
+        Check if a session exists.
+
+        Args:
+            session_id: Session UUID
+
+        Returns:
+            True if session exists, False otherwise
+        """
+        return session_id in self.sessions

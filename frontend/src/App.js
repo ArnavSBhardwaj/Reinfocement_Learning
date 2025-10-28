@@ -1,0 +1,259 @@
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import ParameterPanel from './components/ParameterPanel';
+import EnvironmentViewer from './components/EnvironmentViewer';
+import RewardChart from './components/RewardChart';
+import LearningVisualization from './components/LearningVisualization';
+import ControlButtons from './components/ControlButtons';
+import { startTraining, subscribeToTraining, subscribeToPlayback, resetTraining, getEnvironmentPreview } from './api';
+
+function App() {
+  // Configuration state
+  const [selectedAlgorithm] = useState('Q-Learning');
+  const [selectedEnvironment, setSelectedEnvironment] = useState('FrozenLake-v1');
+  const [parameters, setParameters] = useState({});
+
+  // Training state
+  const [sessionId, setSessionId] = useState(null);
+  const [isTraining, setIsTraining] = useState(false);
+  const [isPlayback, setIsPlayback] = useState(false);
+  const [trainingComplete, setTrainingComplete] = useState(false);
+
+  // Data state
+  const [currentFrame, setCurrentFrame] = useState(null);
+  const [currentEpisode, setCurrentEpisode] = useState(0);
+  const [rewards, setRewards] = useState([]);
+  const [learningData, setLearningData] = useState(null);
+
+  // Error state
+  const [error, setError] = useState(null);
+
+  // EventSource reference
+  const [eventSource, setEventSource] = useState(null);
+
+  // Cleanup EventSource on unmount
+  useEffect(() => {
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [eventSource]);
+
+  // Load environment preview and reset when environment changes
+  useEffect(() => {
+    const loadPreview = async () => {
+      try {
+        const previewData = await getEnvironmentPreview(selectedEnvironment);
+        setCurrentFrame(previewData.frame);
+      } catch (err) {
+        console.error('Failed to load environment preview:', err);
+        // Don't set error state for preview failures - not critical
+      }
+    };
+
+    // Reset training state when environment changes
+    const resetState = async () => {
+      // Close EventSource if open
+      if (eventSource) {
+        eventSource.close();
+        setEventSource(null);
+      }
+
+      // Reset backend if there was an active session
+      if (sessionId) {
+        try {
+          await resetTraining();
+        } catch (err) {
+          console.error('Failed to reset training:', err);
+        }
+      }
+
+      // Reset frontend state
+      setSessionId(null);
+      setIsTraining(false);
+      setIsPlayback(false);
+      setTrainingComplete(false);
+      setCurrentEpisode(0);
+      setRewards([]);
+      setLearningData(null);
+      setError(null);
+    };
+
+    resetState();
+    loadPreview();
+  }, [selectedEnvironment]);
+
+  const handleStartTraining = async () => {
+    try {
+      setError(null);
+      setIsTraining(true);
+      setTrainingComplete(false);
+      setRewards([]);
+      setCurrentEpisode(0);
+
+      // Start training session
+      const response = await startTraining({
+        algorithm: selectedAlgorithm,
+        environment: selectedEnvironment,
+        parameters: parameters,
+        seed: 42
+      });
+
+      const newSessionId = response.session_id;
+      setSessionId(newSessionId);
+
+      // Subscribe to training updates
+      const es = subscribeToTraining(
+        newSessionId,
+        // onUpdate
+        (data) => {
+          setCurrentFrame(data.frame);
+          setCurrentEpisode(data.episode);
+          setLearningData(data.learning_data);
+          setRewards(prev => [...prev, data.reward]);
+        },
+        // onComplete
+        (data) => {
+          setIsTraining(false);
+          setTrainingComplete(true);
+        },
+        // onError
+        (err) => {
+          setError(err.message || 'Training failed');
+          setIsTraining(false);
+        }
+      );
+
+      setEventSource(es);
+    } catch (err) {
+      setError(err.message || 'Failed to start training');
+      setIsTraining(false);
+    }
+  };
+
+  const handlePlayPolicy = async () => {
+    if (!sessionId || !trainingComplete) return;
+
+    try {
+      setError(null);
+      setIsPlayback(true);
+
+      // Subscribe to playback stream
+      const es = subscribeToPlayback(
+        sessionId,
+        // onFrames
+        (frames) => {
+          // Animate through frames with 200ms delay
+          let frameIndex = 0;
+          const interval = setInterval(() => {
+            if (frameIndex < frames.length) {
+              setCurrentFrame(frames[frameIndex]);
+              frameIndex++;
+            } else {
+              clearInterval(interval);
+              setIsPlayback(false);
+            }
+          }, 200);
+        },
+        // onError
+        (err) => {
+          setError(err.message || 'Playback failed');
+          setIsPlayback(false);
+        }
+      );
+
+      setEventSource(es);
+    } catch (err) {
+      setError(err.message || 'Failed to play policy');
+      setIsPlayback(false);
+    }
+  };
+
+  const handleReset = async () => {
+    try {
+      // Close EventSource if open
+      if (eventSource) {
+        eventSource.close();
+        setEventSource(null);
+      }
+
+      // Reset backend
+      await resetTraining();
+
+      // Reset frontend state
+      setSessionId(null);
+      setIsTraining(false);
+      setIsPlayback(false);
+      setTrainingComplete(false);
+      setCurrentEpisode(0);
+      setRewards([]);
+      setLearningData(null);
+      setError(null);
+
+      // Reload preview frame
+      const previewData = await getEnvironmentPreview(selectedEnvironment);
+      setCurrentFrame(previewData.frame);
+    } catch (err) {
+      setError(err.message || 'Reset failed');
+    }
+  };
+
+  return (
+    <div className="App">
+      <header className="app-header">
+        <h1>RL Playground</h1>
+        <p className="subtitle">Interactive Reinforcement Learning Visualization</p>
+      </header>
+
+      {error && (
+        <div className="error-banner">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      <div className="main-content">
+        <div className="column column-left">
+          <ParameterPanel
+            algorithm={selectedAlgorithm}
+            environment={selectedEnvironment}
+            parameters={parameters}
+            onParametersChange={setParameters}
+            onEnvironmentChange={setSelectedEnvironment}
+          />
+          <ControlButtons
+            onStartTraining={handleStartTraining}
+            onReset={handleReset}
+            onPlayPolicy={handlePlayPolicy}
+            isTraining={isTraining}
+            isPlayback={isPlayback}
+            canPlayPolicy={trainingComplete}
+          />
+        </div>
+
+        <div className="column column-center">
+          <EnvironmentViewer
+            frame={currentFrame}
+            episode={currentEpisode}
+            isTraining={isTraining}
+            isPlayback={isPlayback}
+          />
+        </div>
+
+        <div className="column column-right">
+          <RewardChart rewards={rewards} />
+          <LearningVisualization
+            learningData={learningData}
+            algorithm={selectedAlgorithm}
+          />
+        </div>
+      </div>
+
+      <footer className="app-footer">
+        <p>Phase 1: Q-Learning on FrozenLake-v1</p>
+      </footer>
+    </div>
+  );
+}
+
+export default App;

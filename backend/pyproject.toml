@@ -1,0 +1,13 @@
+[project]
+name = "rl-playground-backend"
+version = "0.1.0"
+description = "Backend for RL Playground - Educational RL visualization tool"
+requires-python = ">=3.9"
+dependencies = [
+    "flask>=3.0.0",
+    "flask-cors>=4.0.0",
+    "gymnasium>=0.29.0",
+    "numpy>=1.24.0",
+    "pillow>=10.0.0",
+    "pygame>=2.1.0",
+]
