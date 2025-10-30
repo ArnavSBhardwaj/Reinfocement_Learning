@@ -10,7 +10,7 @@ import { startTraining, subscribeToTraining, subscribeToPlayback, resetTraining,
 function App() {
   // Configuration state
   const [selectedAlgorithm] = useState('Q-Learning');
-  const [selectedEnvironment, setSelectedEnvironment] = useState('FrozenLake-v1');
+  const [selectedEnvironment, setSelectedEnvironment] = useState('FrozenLake-v1-NoSlip');
   const [parameters, setParameters] = useState({});
 
   // Training state

@@ -5,6 +5,8 @@ os.environ['SDL_VIDEODRIVER'] = 'dummy'
 from flask import Flask, request, jsonify, Response, stream_with_context
 from flask_cors import CORS
 import json
+import queue
+import threading
 
 print("DEBUG: Starting imports...")
 
@@ -190,10 +192,13 @@ def stream_training(session_id):
 
     def generate():
         """Generator function for SSE events."""
+        # Create a queue to pass data from training thread to SSE stream
+        event_queue = queue.Queue()
+
         def callback(episode, reward, learning_data, frame):
-            """Callback for each episode."""
+            """Callback for each episode - puts data into queue."""
             print(f"DEBUG: Episode {episode} completed with reward {reward}")
-            
+
             # Convert frame to base64
             frame_base64 = EnvironmentManager.frame_to_base64(frame)
 
@@ -206,36 +211,64 @@ def stream_training(session_id):
                 'status': 'training'
             }
 
-            # Send SSE event
-            yield f"data: {json.dumps(event_data)}\n\n"
+            # Put event into queue (instead of yielding)
+            event_queue.put(event_data)
 
-        try:
-            print(f"DEBUG: Starting training for session {session_id} with {num_episodes} episodes")
-            
-            # Start training
-            trainer.train(session_id, num_episodes, callback)
+        def train_in_thread():
+            """Run training in a separate thread."""
+            try:
+                print(f"DEBUG: Starting training for session {session_id} with {num_episodes} episodes")
 
-            print(f"DEBUG: Training completed successfully for session {session_id}")
-            
-            # Send completion event
-            completion_data = {
-                'status': 'complete',
-                'message': 'Training completed successfully'
-            }
-            yield f"data: {json.dumps(completion_data)}\n\n"
+                # Start training
+                trainer.train(session_id, num_episodes, callback)
 
-        except Exception as e:
-            print(f"DEBUG: Training failed with error: {e}")
-            print(f"DEBUG: Error type: {type(e)}")
-            import traceback
-            print(f"DEBUG: Full traceback: {traceback.format_exc()}")
-            
-            # Send error event
-            error_data = {
-                'status': 'error',
-                'message': str(e)
-            }
-            yield f"data: {json.dumps(error_data)}\n\n"
+                print(f"DEBUG: Training completed successfully for session {session_id}")
+
+                # Send completion event
+                completion_data = {
+                    'status': 'complete',
+                    'message': 'Training completed successfully'
+                }
+                event_queue.put(completion_data)
+
+            except Exception as e:
+                print(f"DEBUG: Training failed with error: {e}")
+                print(f"DEBUG: Error type: {type(e)}")
+                import traceback
+                print(f"DEBUG: Full traceback: {traceback.format_exc()}")
+
+                # Send error event
+                error_data = {
+                    'status': 'error',
+                    'message': str(e)
+                }
+                event_queue.put(error_data)
+            finally:
+                # Signal end of training
+                event_queue.put(None)
+
+        # Start training in background thread
+        training_thread = threading.Thread(target=train_in_thread)
+        training_thread.daemon = True
+        training_thread.start()
+
+        # Yield events from the queue
+        while True:
+            try:
+                # Get event from queue (blocks until available)
+                event_data = event_queue.get(timeout=1)
+
+                if event_data is None:
+                    # End of training signal
+                    break
+
+                # Yield SSE event
+                yield f"data: {json.dumps(event_data)}\n\n"
+
+            except queue.Empty:
+                # No data available, send keep-alive comment
+                yield ": keep-alive\n\n"
+                continue
 
     # Return SSE response with proper headers
     return Response(
