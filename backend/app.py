@@ -329,4 +329,5 @@ if __name__ == '__main__':
     print("  POST /api/reset")
     print("\nPress Ctrl+C to stop")
 
-    app.run(debug=True, port=5001, threaded=True)
+    # host='0.0.0.0' allows connections from outside the container (required for Docker)
+    app.run(host='0.0.0.0', debug=True, port=5001, threaded=True)
