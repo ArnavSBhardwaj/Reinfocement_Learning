@@ -242,13 +242,13 @@ rl-playground/
 │   ├── package.json                  # Node.js dependencies
 │   ├── package-lock.json
 │   └── README.md
+├── docs/
+│   ├── ARCHITECTURE.md               # Architecture decisions and design patterns
+│   └── WORKPLAN.md                   # Development roadmap and phases
 ├── tutorials/
 │   └── docker-workflow.md            # Beginner's guide to Docker development
 ├── docker-compose.yml                # Multi-container orchestration
 ├── CHANGELOG.md                      # Version history
-├── CLAUDE.md                         # Project instructions for Claude Code
-├── WORKPLAN.md                       # Development roadmap
-├── rl_instructions.md                # Additional RL instructions
 └── README.md                         # This file
 ```
 
