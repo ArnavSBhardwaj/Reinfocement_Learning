@@ -4,6 +4,8 @@ All notable changes to RL Playground will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+**Note**: Phase 1 is currently in development. Core features are implemented but production readiness (testing, UI polish, documentation) is ongoing.
+
 ## [0.2.0] - 2025-10-30
 
 ### Added
@@ -13,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - docker-compose.yml for multi-container orchestration
   - Volume mounting for live code editing during development
   - .dockerignore files for optimized builds
-- **Comprehensive Docker development guide** (400+ lines) in README.md
+- **Comprehensive Docker development guide** (400+ lines) in tutorials/docker-workflow.md
   - Step-by-step first-time setup instructions
   - Daily development workflow guide
   - Troubleshooting flowcharts for common issues
