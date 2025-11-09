@@ -157,10 +157,48 @@ frontend/
 8. Animate through frames with setInterval (200ms delay)
 
 ### Q-Table Visualization
-- Display as 4×4 grid (FrozenLake has 16 states)
-- Each cell shows 4 action values in cross pattern (↑ ↓ ← →)
-- Color-code by Q-value magnitude (blue=low, yellow=high)
-- Show min/max/avg statistics
+
+**Visual Layout**:
+- Display as 4×4 grid matching FrozenLake environment layout (16 states). IMPORTANT: This is only applicable to the 4x4 frozenlake environment. Different environments should be displayed differently. For now focus only on Frozenlake, but build the architecture in a modular way so that it can be extended later. 
+- Each cell represents one state and contains 4 directional arrows: ↑ (up), → (right), ↓ (down), ← (left)
+- Arrows should be positioned in a cross/plus pattern within each cell (up at top, right at right, down at bottom, left at left)
+
+**Color Coding (Global Normalization)**:
+- Each arrow is colored using a gradient from violet (minimum Q-value) to orange (maximum Q-value)
+- **Important**: Min/max are calculated GLOBALLY across all 64 Q-values (16 states × 4 actions)
+- This allows users to see the absolute distribution of Q-values across the entire table
+- Example: If global Q-values range from -0.5 to 2.0:
+  - An action with Q-value -0.5 gets violet (global minimum)
+  - An action with Q-value 2.0 gets orange (global maximum)
+  - An action with Q-value 0.75 gets a mid-range color interpolated between violet and orange
+- Use a smooth gradient interpolation (e.g., HSL color space transitioning from violet to orange)
+
+**Highlighting Best Action per State**:
+- For each state, identify the action with the maximum Q-value
+- Draw ONLY THE EDGES (border) of that arrow in orange to make it easily distinguishable
+- Border should be thick enough to be visible (e.g., 3-4px)
+- **Tie handling**: If multiple actions share the maximum Q-value for a state (e.g., two actions both have 0.8), do NOT draw orange borders for any action in that state
+- This visual cue helps users quickly identify the optimal action for each state while the fill color shows absolute value
+
+**Q-Value Labels**:
+- Display the actual Q-value number inside each arrow
+- Use black text for readability against the colored background
+- Format numbers to 2-3 decimal places (e.g., "0.82" or "0.123")
+- Font should be small but legible
+
+**Additional Information**:
+- Show global statistics above the grid: min Q-value, max Q-value, average Q-value across all 64 values
+- This helps users understand the overall learning progress and provides context for the color gradient
+
+**Implementation Notes**:
+- Frontend receives Q-table as 16×4 array from backend
+- Calculate global min and max across all 64 Q-values
+- Display the actual Q-values numbers and not a normalised number. This helps users to better understand the actual algorithm.
+- Map normalized value to violet-orange gradient
+- For each state, find the maximum Q-value among its 4 actions
+- Check for ties (count how many actions have the max value)
+- If exactly one action has the max value, apply orange border; if multiple actions tie, no borders
+- Render arrow shapes (SVG triangles recommended for border control) with gradient fill color, optional orange border, and black text overlay
 
 ### EventSource Cleanup
 Always close EventSource connections to prevent memory leaks:

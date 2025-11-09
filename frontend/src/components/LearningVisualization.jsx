@@ -25,17 +25,40 @@ const LearningVisualization = ({ learningData, algorithm }) => {
   const maxQ = Math.max(...allValues);
   const avgQ = allValues.reduce((sum, val) => sum + val, 0) / allValues.length;
 
-  // Color mapping function (normalize to 0-1 range)
-  const getColor = (value) => {
-    if (maxQ === minQ) return '#cccccc';
-    const normalized = (value - minQ) / (maxQ - minQ);
+  // Color mapping function: HPI Violet to HPI Orange gradient
+  const getColorFromGradient = (normalizedValue) => {
+    // HPI Violet: #7664a0 -> rgb(118, 100, 160)
+    // HPI Orange: #ff7500 -> rgb(255, 117, 0)
 
-    // Blue (low) to Yellow (high)
-    const r = Math.round(normalized * 255);
-    const g = Math.round(normalized * 255);
-    const b = Math.round((1 - normalized) * 255);
+    const violet = { r: 118, g: 100, b: 160 };
+    const orange = { r: 255, g: 117, b: 0 };
+
+    const r = Math.round(violet.r + (orange.r - violet.r) * normalizedValue);
+    const g = Math.round(violet.g + (orange.g - violet.g) * normalizedValue);
+    const b = Math.round(violet.b + (orange.b - violet.b) * normalizedValue);
 
     return `rgb(${r}, ${g}, ${b})`;
+  };
+
+  // Normalize Q-values globally (across all 64 values)
+  const normalizeGlobal = (value) => {
+    // Handle edge case where all values are equal
+    if (maxQ === minQ) {
+      return 0.5; // Return middle color
+    }
+
+    return (value - minQ) / (maxQ - minQ);
+  };
+
+  // Find best action(s) for a state
+  const getBestActions = (qValues) => {
+    const maxValue = Math.max(...qValues);
+    const bestActionIndices = qValues
+      .map((val, idx) => (val === maxValue ? idx : -1))
+      .filter(idx => idx !== -1);
+
+    // Return indices only if there's exactly one best action (no ties)
+    return bestActionIndices.length === 1 ? bestActionIndices : [];
   };
 
   // Render Q-table as 4x4 grid with action values in cross pattern
@@ -47,28 +70,49 @@ const LearningVisualization = ({ learningData, algorithm }) => {
         const state = row * gridSize + col;
         const qValues = qTable[state];
 
-        // qValues: [UP, DOWN, LEFT, RIGHT]
-        const up = qValues[0];
+        // FrozenLake action order: [LEFT, DOWN, RIGHT, UP]
+        const left = qValues[0];
         const down = qValues[1];
-        const left = qValues[2];
-        const right = qValues[3];
+        const right = qValues[2];
+        const up = qValues[3];
 
-        // Get max Q-value for background color
-        const maxValue = Math.max(...qValues);
-        const bgColor = getColor(maxValue);
+        // Normalize Q-values globally
+        const colors = qValues.map(val =>
+          getColorFromGradient(normalizeGlobal(val))
+        );
+
+        // Get best action(s) - empty array if tie
+        const bestActions = getBestActions(qValues);
+        const isBestAction = (actionIdx) => bestActions.includes(actionIdx);
 
         cells.push(
-          <div
-            key={state}
-            className="q-cell"
-            style={{ backgroundColor: bgColor }}
-          >
+          <div key={state} className="q-cell">
             <div className="state-number">{state}</div>
             <div className="q-values-cross">
-              <div className="q-up">{up.toFixed(2)}</div>
-              <div className="q-left">{left.toFixed(2)}</div>
-              <div className="q-right">{right.toFixed(2)}</div>
-              <div className="q-down">{down.toFixed(2)}</div>
+              <div
+                className={`q-arrow q-up ${isBestAction(3) ? 'best-action' : ''}`}
+                style={{ backgroundColor: colors[3] }}
+              >
+                <span className="q-value-text">{up.toFixed(2)}</span>
+              </div>
+              <div
+                className={`q-arrow q-left ${isBestAction(0) ? 'best-action' : ''}`}
+                style={{ backgroundColor: colors[0] }}
+              >
+                <span className="q-value-text">{left.toFixed(2)}</span>
+              </div>
+              <div
+                className={`q-arrow q-right ${isBestAction(2) ? 'best-action' : ''}`}
+                style={{ backgroundColor: colors[2] }}
+              >
+                <span className="q-value-text">{right.toFixed(2)}</span>
+              </div>
+              <div
+                className={`q-arrow q-down ${isBestAction(1) ? 'best-action' : ''}`}
+                style={{ backgroundColor: colors[1] }}
+              >
+                <span className="q-value-text">{down.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         );
@@ -103,17 +147,18 @@ const LearningVisualization = ({ learningData, algorithm }) => {
 
       <div className="legend">
         <div className="legend-item">
-          <div className="legend-color" style={{ background: getColor(minQ) }}></div>
-          <span>Low Q-value</span>
+          <div className="legend-color" style={{ background: '#7664a0' }}></div>
+          <span>Lowest (global)</span>
         </div>
         <div className="legend-item">
-          <div className="legend-color" style={{ background: getColor(maxQ) }}></div>
-          <span>High Q-value</span>
+          <div className="legend-color" style={{ background: '#ff7500' }}></div>
+          <span>Highest (global)</span>
         </div>
       </div>
 
       <p className="hint">
-        Each cell shows Q-values for actions: ↑ (up), ↓ (down), ← (left), → (right)
+        Arrow colors show absolute Q-values across the entire table (violet = global min, orange = global max).
+        Cyan borders highlight the best action for each state (no border shown if there's a tie).
       </p>
     </div>
   );
