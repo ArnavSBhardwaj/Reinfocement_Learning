@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# RL Playground - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React frontend for the RL Playground educational tool.
 
-## Available Scripts
+## Quick Start
 
-In the project directory, you can run:
+### With Docker (Recommended)
+```bash
+# From project root
+docker-compose up
+```
+Frontend runs on http://localhost:3000
 
-### `npm start`
+### Without Docker
+```bash
+# Install dependencies
+npm install
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Start development server
+npm start
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Testing
 
-### `npm test`
+```bash
+# Run tests once
+npm test -- --watchAll=false
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Run tests in watch mode
+npm test
 
-### `npm run build`
+# Run tests with coverage
+npm test -- --coverage --watchAll=false
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Tech Stack
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **React 19** - UI framework
+- **Recharts** - Data visualization
+- **Axios** - HTTP client
+- **React Testing Library** - Component testing
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Key Components
 
-### `npm run eject`
+- `App.js` - Main application with state management
+- `ParameterPanel.jsx` - Dynamic parameter controls
+- `EnvironmentViewer.jsx` - Environment frame display
+- `RewardChart.jsx` - Episode reward tracking
+- `LearningVisualization.jsx` - Q-table heatmap
+- `ControlButtons.jsx` - Start/Stop/Play Policy buttons
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Development
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The frontend communicates with the Flask backend via:
+- **REST API** - Control operations (start training, reset)
+- **Server-Sent Events (SSE)** - Real-time streaming updates
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+See the main [README.md](../README.md) for full setup instructions.
