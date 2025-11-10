@@ -25,10 +25,13 @@ ENV PATH="/root/.local/bin:$PATH"
 # Copy dependency files (for Docker layer caching)
 COPY pyproject.toml uv.lock* ./
 
+# Tell uv to use system Python instead of creating a virtual environment
+ENV UV_SYSTEM_PYTHON=1
+
 # Install Python dependencies using uv
-# --system: installs into system Python (no venv needed in container)
+# UV_SYSTEM_PYTHON=1 tells uv to install into system Python (no venv needed in container)
 # --all-extras: includes dev dependencies (test tools)
-RUN uv sync --system --all-extras
+RUN uv sync --all-extras
 
 # Copy all application code
 COPY . .
@@ -39,5 +42,9 @@ EXPOSE 5001
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 
+# Add virtual environment to PATH so 'python' and 'pytest' work directly
+ENV PATH="/app/.venv/bin:$PATH"
+
 # Command to run when container starts
+# Now we can use 'python' directly thanks to PATH
 CMD ["python", "app.py"]
