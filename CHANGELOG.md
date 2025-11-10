@@ -6,6 +6,65 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 **Note**: Phase 1 is currently in development. Core features are implemented but production readiness (testing, UI polish, documentation) is ongoing.
 
+## [0.3.0] - 2025-11-10
+
+### Added
+- **Stop Training button** to interrupt and reset training mid-run
+  - Button dynamically shows "Start Training" or "Stop Training" based on state
+  - Properly closes EventSource connections and resets backend sessions
+  - Returns to preview frame after stopping
+- **Improved status messaging** in Environment Viewer
+  - Initial state: "Ready to train a policy"
+  - After training completes: "Ready" (to play policy)
+  - Provides clearer guidance for first-time users
+
+### Changed
+- **HPI Corporate Design color palette** applied across entire frontend
+  - Primary color: HPI Orange (#ff7500)
+  - Secondary color: HPI Violet (#7664a0)
+  - Header gradient: Orange → Violet
+  - Updated buttons: Orange (primary), Violet (secondary)
+  - Updated all status indicators, parameter controls, and statistics
+  - Footer: HPI dark gray (#212427)
+  - Body background: Light gray (#f5f5f5) for better panel contrast
+- **Q-table visualization completely redesigned** with global normalization approach
+  - Arrow colors now show absolute Q-value distribution across all 64 values
+  - Violet (#7664a0) = global minimum, Orange (#ff7500) = global maximum
+  - Best action per state highlighted with cyan border (#00d9ff, 5px thick)
+  - Tie handling: No border shown if multiple actions share maximum value
+  - Black cell backgrounds for improved contrast
+  - White state numbers (visible against black background)
+  - Compact, centered grid layout (max-width: 500px)
+- **Layout optimization** for better screen space utilization
+  - Column widths adjusted: 300px (parameters) | 400px (environment) | flexible (Q-table/rewards)
+  - Q-table visualization given significantly more horizontal space
+  - Environment viewer made more compact
+
+### Fixed
+- **Action mapping bug** in Q-table visualization
+  - LEFT and RIGHT actions were displaying in swapped positions
+  - Corrected to match FrozenLake action order: [LEFT, DOWN, RIGHT, UP]
+- **Start Training now resets properly** to prevent memory leaks
+  - Closes existing EventSource connections before starting new session
+  - Clears backend sessions to free memory
+
+### Documentation
+- **ARCHITECTURE.md updated** with detailed Q-table visualization specifications
+  - Global normalization approach documented
+  - Best action highlighting and tie-handling logic explained
+  - Color gradient interpolation details
+- **Project structure reorganized**
+  - CLAUDE.md renamed to docs/ARCHITECTURE.md for clarity
+  - WORKPLAN.md moved to docs/WORKPLAN.md
+  - Created tutorials/ directory for user guides
+  - Updated .gitignore to exclude .claude/ local settings
+
+### Visual Improvements
+- Consistent HPI branding throughout application
+- Improved visual hierarchy with color-coded elements
+- Better contrast and readability across all components
+- Professional, polished appearance ready for presentations
+
 ## [0.2.0] - 2025-10-30
 
 ### Added
