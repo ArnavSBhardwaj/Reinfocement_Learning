@@ -12,7 +12,9 @@ An educational web interface for building intuition about reinforcement learning
 
 **Design**: Modular architecture designed for easy extension with new algorithms and environments
 
-## Quick Start
+## Quick Start (Experienced Users)
+
+Already have Docker installed? Get started in 3 commands:
 
 ```bash
 # 1. Clone the repository
@@ -22,75 +24,79 @@ cd workshop-rl1-introduction
 # 2. Start with Docker
 docker-compose up
 
-# 3. Open browser
-http://localhost:3000
+# 3. Open browser to http://localhost:3000
 ```
 
 **First-time setup takes ~1-2 minutes** (downloads pre-built images). Subsequent starts take seconds!
 
-## Installation
+---
 
-### Option 1: Docker Setup (Strongly Recommended)
+## Installation (Beginners)
 
-**Prerequisites**:
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
-- No Python or Node.js installation needed!
+**New to programming or Docker?** Follow our step-by-step installation guides with screenshots:
 
-**Installation Steps**:
+### Choose Your Operating System:
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/aihpi/workshop-rl1-introduction.git
-   cd workshop-rl1-introduction
-   ```
+<table>
+<tr>
+<td align="center" width="33%">
+<h3>📱 Windows</h3>
+<p><strong><a href="docs/INSTALLATION_WINDOWS.md">Windows Installation Guide</a></strong></p>
+<p>For Windows 10/11</p>
+<p><em>~10-15 minutes</em></p>
+</td>
+<td align="center" width="33%">
+<h3>🍎 macOS</h3>
+<p><strong><a href="docs/INSTALLATION_MACOS.md">macOS Installation Guide</a></strong></p>
+<p>For macOS 10.15+</p>
+<p><em>~10-15 minutes</em></p>
+</td>
+<td align="center" width="33%">
+<h3>🐧 Linux</h3>
+<p><strong><a href="docs/INSTALLATION_LINUX.md">Linux Installation Guide</a></strong></p>
+<p>For Ubuntu/Debian</p>
+<p><em>~15-20 minutes</em></p>
+</td>
+</tr>
+</table>
 
-2. **Start the application**:
-   ```bash
-   docker-compose up
-   ```
+**Each guide includes**:
+- ✅ How to open terminal/command prompt
+- ✅ Installing Git step-by-step
+- ✅ Installing Docker with screenshots
+- ✅ Downloading and running RL Lab
+- ✅ Troubleshooting common issues
+- ✅ Screenshots for every step (coming soon)
 
-   **First time**: Downloads pre-built Docker images (~1-2 minutes)
-   **Subsequent runs**: Starts in seconds using cached images
+**No prior experience required!** The guides assume you're starting from scratch.
 
-**What happens automatically**:
-- Downloads pre-built backend (Python/Flask) and frontend (React) images from Docker Hub
-- Starts both services with all dependencies included
-- Enables live code reloading for development
+---
+
+### Useful Docker Commands
+
+Once installed, here are some helpful commands:
+
+```bash
+docker-compose up              # Start the application
+docker-compose up -d           # Run in background (detached mode)
+docker-compose down            # Stop the application
+docker-compose logs -f         # View live logs from both services
+docker-compose logs backend    # View only backend logs
+docker-compose ps              # Check container status
+docker-compose restart         # Restart services
+```
 
 **Access the application**:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5001
 
-**Stop the application**:
-```bash
-docker-compose down
-```
-
-**Useful Docker commands**:
-```bash
-docker-compose up -d              # Run in background (detached mode)
-docker-compose logs -f            # View live logs from both services
-docker-compose logs backend       # View only backend logs
-docker-compose logs frontend      # View only frontend logs
-docker-compose ps                 # Check container status
-docker-compose restart            # Restart services
-```
-
-**Troubleshooting**: See [Docker Workflow Guide](tutorials/docker-workflow.md) for detailed troubleshooting.
-
 ---
 
-### Option 2: Local Setup (Not Recommended)
+### Advanced: Local Setup (Without Docker)
 
-**Prerequisites**:
-- Python 3.9+
-- Node.js 14+
-- [uv](https://github.com/astral-sh/uv) (Python package manager)
+**Not recommended for workshops**, but possible for development:
 
-**Install uv**:
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+**Prerequisites**: Python 3.9+, Node.js 14+, [uv](https://github.com/astral-sh/uv)
 
 **Backend**:
 ```bash
