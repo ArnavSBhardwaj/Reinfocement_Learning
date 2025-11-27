@@ -6,6 +6,121 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 **Note**: Phase 1 is currently in development. Core features are implemented but production readiness (testing, UI polish, documentation) is ongoing.
 
+## [0.7.0] - 2025-11-20 (In Progress)
+
+### Completed Today
+
+#### Added
+- **Docker Hub pre-built images** for faster workshop setup
+  - Created Docker Hub account (username: davidgoll)
+  - Built and pushed backend/frontend images to Docker Hub
+  - GitHub Actions workflow (.github/workflows/docker-build.yml) for automated builds
+  - Triggers on manual dispatch or when Dockerfile/dependency files change
+  - Reduces first-time setup from ~10 minutes to ~1-2 minutes
+- **GitHub Actions secrets** configured for CI/CD
+  - DOCKERHUB_USERNAME and DOCKERHUB_TOKEN added to repository secrets
+
+#### Changed
+- **Configuration panel improvements**
+  - Reordered: Environment selector now appears before Algorithm selector
+  - Algorithm changed from read-only text to dropdown (like Environment)
+  - Matches the visual order of info panels below (EnvironmentInfo, then AlgorithmInfo)
+- **docker-compose.yml** updated to use pre-built images
+  - Before: `build: context: ./backend`
+  - After: `image: davidgoll/workshop-rl1-backend:latest`
+- **README.md** improved for workshop participants
+  - Updated title to "RL Lab"
+  - Better installation instructions with time estimates
+  - Simplified git clone instructions with aihpi organization URL
+  - Clearer Docker setup steps
+
+#### Documentation
+- Updated branding in frontend/public/manifest.json to "RL Lab"
+
+### Issue Discovered: Docker Multi-Architecture Compatibility
+
+**Problem**: Workshop participants with Apple Silicon Macs (M1/M2/M3/M4) cannot run `docker-compose up` on fresh clones.
+
+**Error Message**:
+```
+no matching manifest for linux/arm64/v8 in the manifest list entries:
+no match for platform in manifest: not found
+```
+
+**Root Cause**:
+- Docker Hub images only support `linux/amd64` (Intel/AMD) architecture
+- Missing `linux/arm64` (Apple Silicon) architecture support
+- GitHub Actions workflow builds images on Ubuntu runners (AMD64) without specifying multi-platform builds
+- Without `platforms` parameter, Docker only builds for the runner's native architecture
+
+**Why Some Systems Work**:
+- Systems with locally-built ARM64 images (cached before Docker Hub migration) work fine
+- Docker uses local images first, never tries to pull from Docker Hub
+- Fresh clones have no local images, must pull from Docker Hub → fails on ARM64
+
+**Planned Fix**:
+- Add `platforms: linux/amd64,linux/arm64` to `.github/workflows/docker-build.yml`
+- GitHub Actions will build for both architectures using Docker Buildx
+- Pushes multi-platform manifest to Docker Hub
+- Both Intel/AMD and Apple Silicon Macs can pull appropriate images
+
+**Implementation Status**: Issue documented, fix pending
+
+---
+
+### Next Session: Q-Value Initialization Feature
+
+**Feature Goal**: Allow users to control how Q-table values are initialized (currently all zeros)
+
+**Implementation Plan** (Incremental 5-step approach for easier debugging):
+
+**Step 1: Backend Schema** (Add parameters to q_learning.py)
+- Add 4 new parameters to `get_parameter_schema()`:
+  - `q_init_strategy`: dropdown, options=['fixed', 'random'], default='fixed'
+  - `q_init_value`: float, default=0.0 (for 'fixed' strategy)
+  - `q_init_min`: float, default=0.0 (for 'random' strategy)
+  - `q_init_max`: float, default=1.0 (for 'random' strategy)
+- **Test**: Verify parameters appear in frontend (even if not functional yet)
+
+**Step 2: Backend Logic** (Implement initialization method)
+- Create `_initialize_q_table()` method with strategy selection
+  - 'fixed': `np.full((num_states, num_actions), value)`
+  - 'random': `np.random.uniform(min_val, max_val, (num_states, num_actions))`
+  - Validation: raise error if `min_val >= max_val`
+- Update `__init__` to extract parameters and call initialization
+- **Test**: Start training, verify Q-table initializes correctly via backend logs
+
+**Step 3: Frontend UI - Strategy Selector**
+- Add new section "Q-Value Initialization" in ParameterPanel (before "Learning Parameters")
+- Add strategy dropdown only (no conditional inputs yet)
+- **Test**: Select strategies, verify parameter sent to backend
+
+**Step 4: Conditional Inputs**
+- Add conditional rendering based on selected strategy:
+  - `q_init_strategy === 'fixed'`: Show single number input for q_init_value
+  - `q_init_strategy === 'random'`: Show two number inputs (min, max)
+- Use indentation styling (`.parameter-indent`) for visual hierarchy
+- **Test**: Switch strategies, verify correct inputs appear and values update
+
+**Step 5: Validation**
+- Add `isValidParameters()` function in App.js
+  - Check if `q_init_min >= q_init_max` for random strategy
+  - Return false if invalid
+- Pass `disabled={!isValidParameters()}` to ControlButtons
+- Update ControlButtons to show validation error message when disabled
+- **Test**: Try invalid inputs (min >= max), verify button disables and error shows
+
+**Design Decisions**:
+- Two-layered UI approach: Strategy dropdown determines which inputs appear
+- No arbitrary limits on float values (user has full control)
+- Validation prevents training with invalid parameters (min >= max)
+- Visual hierarchy: Indentation for conditional inputs, separate sections for Q-init vs Learning
+
+**Current Status**:
+- All changes reverted to commit 8f5302a (Configuration panel improvements)
+- Docker containers running with pre-built images
+- Ready to start Step 1 next session
+
 ## [0.6.0] - 2025-11-12
 
 ### Added
