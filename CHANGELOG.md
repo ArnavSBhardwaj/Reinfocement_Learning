@@ -77,6 +77,12 @@ no match for platform in manifest: not found
   - No Docker image rebuilds required - only port mapping change in docker-compose.yml
   - All documentation updated (README, installation guides, tutorials)
 
+#### Fixed
+- **CORS configuration** updated to allow frontend on port 3030
+  - Backend CORS origins updated from port 3000 → 3030 in backend/app.py
+  - Fixes "Network Error" and "Failed to load parameter schema" issues
+  - Issue occurred because port change required corresponding CORS update
+
 ---
 
 ### Next Session: Q-Value Initialization Feature

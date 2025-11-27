@@ -32,8 +32,8 @@ print("DEBUG: Creating Flask app...")
 app = Flask(__name__)
 
 print("DEBUG: Setting up CORS...")
-# Enable CORS for frontend on localhost:3000
-CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'])
+# Enable CORS for frontend on localhost:3030
+CORS(app, origins=['http://localhost:3030', 'http://127.0.0.1:3030'])
 
 print("DEBUG: Creating training coordinator...")
 # Global training coordinator
