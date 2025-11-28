@@ -23,13 +23,15 @@ Already have Docker installed? Get started in 3 commands:
 git clone https://github.com/aihpi/workshop-rl1-introduction.git
 cd workshop-rl1-introduction
 
-# 2. Start with Docker
-docker-compose up
+# 2. Start with Docker (detached mode)
+docker-compose up -d
 
 # 3. Open browser to http://localhost:3030
 ```
 
 **First-time setup takes ~1-2 minutes** (downloads pre-built images). Subsequent starts take seconds!
+
+**Note**: Running in detached mode (`-d`) keeps your terminal free. To view logs if needed for debugging, open a separate terminal and run `docker-compose logs -f`
 
 ---
 
@@ -79,11 +81,11 @@ docker-compose up
 Once installed, here are some helpful commands:
 
 ```bash
-docker-compose up              # Start the application
-docker-compose up -d           # Run in background (detached mode)
+docker-compose up -d           # Start the application (detached mode)
 docker-compose down            # Stop the application
-docker-compose logs -f         # View live logs from both services
+docker-compose logs -f         # View live logs (for debugging, in separate terminal)
 docker-compose logs backend    # View only backend logs
+docker-compose logs frontend   # View only frontend logs
 docker-compose ps              # Check container status
 docker-compose restart         # Restart services
 ```

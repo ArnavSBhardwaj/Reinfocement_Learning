@@ -91,15 +91,19 @@ Press `Ctrl+C` in the terminal where docker-compose is running.
 # Navigate to project directory
 cd workshop-rl1-introduction
 
-# Start containers (much faster after first build - takes ~10 seconds)
-docker-compose up
+# Start containers in detached mode (much faster after first build - takes ~10 seconds)
+docker-compose up -d
 ```
 
-Keep this terminal open. You'll see logs from both backend and frontend here.
+The containers will run in the background, keeping your terminal free.
 
-**Opening a Second Terminal for Commands**
+**Viewing Logs (Optional)**
 
-Open a new terminal window/tab for git commands, checking files, etc. Leave the docker-compose terminal running.
+If you need to see logs for debugging:
+```bash
+docker-compose logs -f    # Follow logs from all services
+```
+Press Ctrl+C to stop viewing logs (containers keep running).
 
 ---
 
@@ -318,7 +322,7 @@ docker-compose ps
 docker-compose down
 ```
 
-This stops the containers. Tomorrow you'll need to run `docker-compose up` again.
+This stops the containers. Tomorrow you'll need to run `docker-compose up -d` again.
 
 ---
 

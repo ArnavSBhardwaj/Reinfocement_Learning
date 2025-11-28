@@ -7,7 +7,7 @@ Flask backend for the RL Playground educational tool.
 ### With Docker (Recommended)
 ```bash
 # From project root
-docker-compose up
+docker-compose up -d
 ```
 Backend API runs on http://localhost:5001
 

@@ -7,7 +7,7 @@ React frontend for the RL Playground educational tool.
 ### With Docker (Recommended)
 ```bash
 # From project root
-docker-compose up
+docker-compose up -d
 ```
 Frontend runs on http://localhost:3030
 

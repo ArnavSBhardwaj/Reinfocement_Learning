@@ -308,12 +308,12 @@ In Terminal (make sure you're still in the `workshop-rl1-introduction` folder), 
 
 **For modern Docker Compose:**
 ```bash
-docker compose up
+docker compose up -d
 ```
 
 **For legacy docker-compose:**
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 Press Enter and wait...
@@ -322,26 +322,29 @@ Press Enter and wait...
 
 **First time running** (~1-2 minutes):
 - Docker will download pre-built images from the internet
-- You'll see lots of text scrolling - this is normal!
-- Look for messages like:
+- You'll see messages like:
   - `Pulling backend...`
   - `Pulling frontend...`
   - `Creating workshop-rl1-introduction_backend_1`
   - `Creating workshop-rl1-introduction_frontend_1`
+  - `Started`
 
 **When ready, you'll see**:
 ```
-backend_1   | * Running on http://0.0.0.0:5001/
-frontend_1  | webpack compiled successfully
-frontend_1  | Compiled successfully!
+✔ Container workshop-rl1-introduction-backend   Started
+✔ Container workshop-rl1-introduction-frontend  Started
 ```
 
 ![Docker compose running](installation-screenshots/linux/08-docker-compose-up.png)
 
-**⚠️ Important**:
-- **Keep this Terminal window open** while you use RL Lab
-- Closing it will stop the application
-- To stop the application later, press `Ctrl + C` in this window
+**✅ Success**: Your terminal is now free to use for other commands! The services are running in the background (detached mode with `-d`).
+
+**💡 Viewing logs** (optional, for debugging):
+If you need to see what's happening or debug issues, open a **separate terminal** and run:
+```bash
+docker compose logs -f    # or: docker-compose logs -f
+```
+This shows live logs from both services. Press `Ctrl + C` to stop viewing logs (the services keep running).
 
 **❌ Troubleshooting**:
 
@@ -404,15 +407,15 @@ Now that RL Lab is running, let's see it in action:
 
 When you're done using RL Lab:
 
-1. Go back to the Terminal window where `docker compose up` is running
-2. Press `Ctrl + C` on your keyboard
-3. Wait for the containers to stop (you'll see "Stopping..." messages)
-4. You can now close the Terminal window
+1. Open Terminal (if you closed it)
+2. Navigate to the project folder: `cd ~/workshop-rl1-introduction` (or wherever you saved it)
+3. Run: `docker compose down` (or `docker-compose down` for legacy)
+4. Wait for the containers to stop (you'll see "Stopped" and "Removed" messages)
 
 To start again later, just:
 1. Open Terminal
 2. Navigate to the project folder: `cd ~/workshop-rl1-introduction` (or wherever you saved it)
-3. Run: `docker compose up` (or `docker-compose up` for legacy)
+3. Run: `docker compose up -d` (or `docker-compose up -d` for legacy)
 
 ---
 

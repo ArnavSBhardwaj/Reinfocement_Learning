@@ -269,7 +269,7 @@ Before continuing, check that Docker Desktop is running:
 
 In Command Prompt (make sure you're still in the `workshop-rl1-introduction` folder), type:
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 Press Enter and wait...
@@ -278,26 +278,29 @@ Press Enter and wait...
 
 **First time running** (~1-2 minutes):
 - Docker will download pre-built images from the internet
-- You'll see lots of text scrolling - this is normal!
-- Look for messages like:
+- You'll see messages like:
   - `Pulling backend...`
   - `Pulling frontend...`
   - `Creating workshop-rl1-introduction_backend_1`
   - `Creating workshop-rl1-introduction_frontend_1`
+  - `Started`
 
 **When ready, you'll see**:
 ```
-backend_1   | * Running on http://0.0.0.0:5001/
-frontend_1  | webpack compiled successfully
-frontend_1  | Compiled successfully!
+✔ Container workshop-rl1-introduction-backend   Started
+✔ Container workshop-rl1-introduction-frontend  Started
 ```
 
 ![Docker compose running](installation-screenshots/windows/13-docker-compose-up.png)
 
-**⚠️ Important**:
-- **Keep this Command Prompt window open** while you use RL Lab
-- Closing it will stop the application
-- To stop the application later, press `Ctrl + C` in this window
+**✅ Success**: Your Command Prompt is now free to use for other commands! The services are running in the background (detached mode with `-d`).
+
+**💡 Viewing logs** (optional, for debugging):
+If you need to see what's happening or debug issues, open a **separate Command Prompt** and run:
+```bash
+docker-compose logs -f
+```
+This shows live logs from both services. Press `Ctrl + C` to stop viewing logs (the services keep running).
 
 **❌ Troubleshooting**:
 
@@ -344,15 +347,15 @@ Now that RL Lab is running, let's see it in action:
 
 When you're done using RL Lab:
 
-1. Go back to the Command Prompt window where `docker-compose up` is running
-2. Press `Ctrl + C` on your keyboard
-3. Wait for the containers to stop (you'll see "Stopping..." messages)
-4. You can now close the Command Prompt window
+1. Open Command Prompt (if you closed it)
+2. Navigate to the project folder: `cd %USERPROFILE%\Desktop\workshop-rl1-introduction`
+3. Run: `docker-compose down`
+4. Wait for the containers to stop (you'll see "Stopped" and "Removed" messages)
 
 To start again later, just:
 1. Open Command Prompt
 2. Navigate to the project folder: `cd %USERPROFILE%\Desktop\workshop-rl1-introduction`
-3. Run: `docker-compose up`
+3. Run: `docker-compose up -d`
 
 ---
 
@@ -427,7 +430,7 @@ Replace `12345` with your actual PID. The `/F` flag forces termination.
 
 **Step 4 - Try starting RL Lab again:**
 ```cmd
-docker-compose up
+docker-compose up -d
 ```
 
 #### **Option 2: Change RL Lab's Ports** (If you need both applications running)
@@ -456,7 +459,7 @@ If you want to keep the other application running, change RL Lab's ports:
    ```
 
 4. Save the file
-5. Start RL Lab: `docker-compose up`
+5. Start RL Lab: `docker-compose up -d`
 6. Access at the new port: `http://localhost:3001`
 
 **Common culprits using these ports**:
@@ -466,7 +469,7 @@ If you want to keep the other application running, change RL Lab's ports:
 
 ### Browser shows "This site can't be reached"
 **Solutions**:
-1. Make sure `docker-compose up` is still running (check Command Prompt window)
+1. Make sure Docker containers are running: `docker-compose ps`
 2. Wait a bit longer - first startup can take 2-3 minutes
 3. Try refreshing the browser
 4. Check Docker Desktop is running
