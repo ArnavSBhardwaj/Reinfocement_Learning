@@ -22,27 +22,11 @@ Before you begin, make sure you have:
 
 Terminal is where you'll type commands to set up the project.
 
-### Option 1: Using Spotlight Search (Fastest)
 1. Press `Command (⌘) + Space` on your keyboard
 2. Type `Terminal`
 3. Press Enter
 
-![Opening Terminal with Spotlight](installation-screenshots/macos/01-spotlight-terminal.png)
-
-### Option 2: Using Finder
-1. Open Finder
-2. Go to **Applications** folder
-3. Open the **Utilities** folder
-4. Double-click **Terminal**
-
-### Option 3: Using Launchpad
-1. Click the Launchpad icon in your Dock (rocket icon)
-2. Type `Terminal` in the search box
-3. Click the Terminal icon
-
 **✅ Success Check**: You should see a window with text like `YourName@MacBook ~ %`
-
-![Terminal window open](installation-screenshots/macos/02-terminal-open.png)
 
 ---
 
@@ -59,21 +43,16 @@ git --version
 
 **✅ If you see something like this, Git is installed! Skip to Step 3:**
 ```
-git version 2.39.2 (Apple Git-143)
+git version 2.45.2 
 ```
-
-![Git version check](installation-screenshots/macos/03-git-version.png)
 
 **❌ If you see "command not found" or are prompted to install Command Line Tools:**
 
 ### 2.2 Install Git (if needed)
 
-You'll see a popup asking to install Command Line Tools. Click **"Install"** and follow the prompts:
+https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
-1. Click "Install" in the popup
-2. Click "Agree" to the license terms
-3. Wait for installation (takes 5-10 minutes)
-4. Click "Done" when finished
+https://git-scm.com/install/mac
 
 **Alternative method** - Install via command:
 ```bash
@@ -98,13 +77,9 @@ Docker runs the RL Lab application in an isolated environment, so you don't need
 1. Open your web browser (Safari, Chrome, Firefox, etc.)
 2. Go to: **https://www.docker.com/products/docker-desktop/**
 3. Click **"Download for Mac"**
-   - For **Apple Silicon (M1/M2/M3)**: Choose "Mac with Apple chip"
+   - For **Apple Silicon (M1/M2/M3/M4)**: Choose "Mac with Apple Silicon"
    - For **Intel Mac**: Choose "Mac with Intel chip"
-   - Not sure which you have? Click the Apple menu () → "About This Mac" and look at "Chip" or "Processor"
-
-4. Wait for download to complete (file is about 500MB)
-
-![Docker Desktop download page](installation-screenshots/macos/04-docker-download.png)
+   - Not sure which you have? Click the Apple menu () → "About This Mac" and look at "Chip"
 
 ### 3.2 Install Docker Desktop
 
@@ -113,16 +88,13 @@ Docker runs the RL Lab application in an isolated environment, so you don't need
 2. Double-click `Docker.dmg` to open it
 3. A window appears showing the Docker icon and Applications folder
 4. **Drag the Docker icon to the Applications folder**
-
-![Docker DMG installation](installation-screenshots/macos/05-docker-dmg.png)
-
 5. Close the installer window
 6. You can eject the Docker disk image (right-click the Docker icon on desktop → Eject)
 
 ### 3.3 Start Docker Desktop
 
-1. Open Finder
-2. Go to **Applications** folder
+1. Press `Command (⌘) + Space` on your keyboard, type in **Docker** and open it
+2. Or go to **Applications** folder
 3. Find and double-click **Docker**
 4. macOS may show a warning: "Docker is an app downloaded from the Internet. Are you sure you want to open it?"
    - Click **"Open"**
@@ -132,8 +104,6 @@ Docker runs the RL Lab application in an isolated environment, so you don't need
 8. You may be asked to create a Docker account - you can **skip** this (click "Continue without signing in" or similar)
 
 **✅ Success Check**: Look for the Docker whale icon in your menu bar (top-right corner of screen). When Docker is running, the whale icon will be steady (not animating).
-
-![Docker running in menu bar](installation-screenshots/macos/06-docker-running.png)
 
 **Click the whale icon** - you should see "Docker Desktop is running"
 
@@ -147,10 +117,8 @@ Docker runs the RL Lab application in an isolated environment, so you don't need
 
 **✅ Success Check**: You should see output like:
 ```
-Docker version 24.0.7, build afdd53b
+Docker version 29.0.1, build eedd969
 ```
-
-![Docker version check](installation-screenshots/macos/07-docker-version.png)
 
 **❌ Troubleshooting**:
 
@@ -187,7 +155,7 @@ git clone https://github.com/aihpi/workshop-rl1-introduction.git
 
 **What you'll see**: Git will download all the project files. This takes about 10-30 seconds.
 
-Output should look like:
+Output should look like something like this (numbers might vary):
 ```
 Cloning into 'workshop-rl1-introduction'...
 remote: Enumerating objects: 543, done.
@@ -197,8 +165,6 @@ remote: Total 543 (delta 215), reused 489 (delta 178), pack-reused 0
 Receiving objects: 100% (543/543), 2.1 MiB | 5.2 MiB/s, done.
 Resolving deltas: 100% (215/215), done.
 ```
-
-![Git clone in progress](installation-screenshots/macos/08-git-clone.png)
 
 ### 4.3 Enter the Project Directory
 
@@ -212,8 +178,6 @@ cd workshop-rl1-introduction
 backend/        frontend/       docs/
 README.md       docker-compose.yml
 ```
-
-![Project directory contents](installation-screenshots/macos/09-directory-contents.png)
 
 **❌ If git clone fails**:
 - Check your internet connection
@@ -291,8 +255,6 @@ This shows live logs from both services. Press `Control + C` to stop viewing log
 - Environment viewer in the center
 - Visualization panels on the right
 
-![RL Lab interface](installation-screenshots/app/01-interface.png)
-
 ---
 
 ## Quick Start: Try It Out!
@@ -304,10 +266,8 @@ Now that RL Lab is running, let's see it in action:
    - Environment viewer shows the agent's position in FrozenLake
    - Reward chart shows learning progress
    - Q-table heatmap shows learned values
-3. **Wait for training to complete** (with default settings, takes about 10-20 seconds)
-4. **Click "Play Policy"** - Watch the trained agent navigate from start to goal!
-
-![RL Lab training](installation-screenshots/app/02-training.png)
+3. **Wait for training to complete** 
+4. **Click "Play Policy"** 
 
 ---
 

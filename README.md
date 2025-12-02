@@ -31,6 +31,7 @@ docker-compose up -d
 
 **First-time setup takes ~1-2 minutes** (downloads pre-built images).
 
+
 **Note**: Running in detached mode (`-d`) keeps your terminal free. To view logs if needed for debugging, open a separate terminal and run `docker-compose logs -f`
 
 ---
