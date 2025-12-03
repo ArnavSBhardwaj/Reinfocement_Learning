@@ -82,6 +82,20 @@ no match for platform in manifest: not found
   - Backend CORS origins updated from port 3000 → 3030 in backend/app.py
   - Fixes "Network Error" and "Failed to load parameter schema" issues
   - Issue occurred because port change required corresponding CORS update
+- **App test updated** to reflect branding change from "RL Playground" to "RL Lab"
+  - Frontend test suite now passing after branding updates
+
+#### Documentation
+- **Installation guides simplified and modernized**
+  - **macOS guide**: Streamlined instructions, removed outdated troubleshooting
+  - **Linux guide**: Rewritten to use Docker Desktop (consistent with macOS/Windows)
+  - Both guides now use standardized Docker Desktop approach for all platforms
+- **README wording improvements** for clarity and consistency
+- **docker-compose default changed to detached mode (-d)**
+  - Default command now: `docker-compose up -d` (runs in background)
+  - README and all installation guides updated to reflect this change
+  - Makes workshop experience cleaner (terminal doesn't fill with logs)
+- **Docker prerequisite added to Quick Start section** for immediate visibility
 
 ---
 
