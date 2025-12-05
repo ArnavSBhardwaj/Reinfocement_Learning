@@ -7,17 +7,25 @@ const ControlButtons = ({
   onPlayPolicy,
   isTraining,
   isPlayback,
-  canPlayPolicy
+  canPlayPolicy,
+  disabled = false
 }) => {
   return (
     <div className="control-buttons">
       <button
         className="btn btn-primary"
         onClick={isTraining ? onStopTraining : onStartTraining}
-        disabled={isPlayback}
+        disabled={isPlayback || disabled}
       >
         {isTraining ? 'Stop Training' : 'Start Training'}
       </button>
+
+      {/* Validation Error Message */}
+      {disabled && !isTraining && (
+        <p className="validation-error">
+          ⚠️ Fix parameter errors before training
+        </p>
+      )}
 
       <button
         className="btn btn-secondary"

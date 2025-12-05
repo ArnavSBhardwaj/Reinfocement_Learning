@@ -103,6 +103,22 @@ function App() {
     loadPreview();
   }, [selectedEnvironment]);
 
+  // Validation function for Q-init parameters
+  const isValidParameters = () => {
+    // Validate Q-init parameters for random strategy
+    if (parameters.q_init_strategy === 'random') {
+      const min = parameters.q_init_min;
+      const max = parameters.q_init_max;
+
+      // Check if values exist and min < max
+      if (min === undefined || max === undefined || min >= max) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleStartTraining = async () => {
     try {
       setError(null);
@@ -303,6 +319,7 @@ function App() {
             isTraining={isTraining}
             isPlayback={isPlayback}
             canPlayPolicy={trainingComplete}
+            disabled={!isValidParameters()}
           />
         </div>
 

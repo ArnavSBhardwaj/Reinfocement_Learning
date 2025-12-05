@@ -25,10 +25,97 @@ class QLearning(BaseAlgorithm):
         self.discount_factor = parameters.get('discount_factor', 0.95)
         self.exploration_rate = parameters.get('exploration_rate', 0.1)
 
-        # Initialize Q-table as zeros (num_states × num_actions)
+        # Extract Q-initialization parameters
+        q_init_strategy = parameters.get('q_init_strategy', 'fixed')
+        q_init_value = float(parameters.get('q_init_value', 0.0))
+        q_init_min = float(parameters.get('q_init_min', 0.0))
+        q_init_max = float(parameters.get('q_init_max', 1.0))
+
+        # Initialize Q-table based on strategy
         num_states = env.observation_space.n
         num_actions = env.action_space.n
-        self.q_table = np.zeros((num_states, num_actions))
+        self.q_table = self._initialize_q_table(
+            num_states,
+            num_actions,
+            q_init_strategy,
+            q_init_value,
+            q_init_min,
+            q_init_max
+        )
+
+        # Identify and handle terminal states
+        self.terminal_states = self._get_terminal_states(env)
+
+        # Force terminal state Q-values to 0 (by RL theory, terminal states have value 0)
+        for state in self.terminal_states:
+            self.q_table[state, :] = 0.0
+
+        print(f"DEBUG: Q-table initialized with strategy='{q_init_strategy}', value={q_init_value} (type={type(q_init_value).__name__}), min={q_init_min} (type={type(q_init_min).__name__}), max={q_init_max} (type={type(q_init_max).__name__})")
+        print(f"DEBUG: Terminal states identified: {sorted(self.terminal_states)}")
+        print(f"DEBUG: Q-table shape: {self.q_table.shape}, dtype: {self.q_table.dtype}")
+        print(f"DEBUG: Q-table min: {np.min(self.q_table)}, max: {np.max(self.q_table)}, mean: {np.mean(self.q_table)}")
+        print(f"DEBUG: Q-table sample (state 0): {self.q_table[0]}")
+
+    def _get_terminal_states(self, env) -> set:
+        """
+        Identify terminal states (holes and goals) from the environment.
+
+        Args:
+            env: Gymnasium environment
+
+        Returns:
+            Set of state indices that are terminal
+        """
+        desc = env.unwrapped.desc.astype(str)
+        nrow = env.unwrapped.nrow
+        ncol = env.unwrapped.ncol
+
+        terminal_states = set()
+        for row in range(nrow):
+            for col in range(ncol):
+                cell_type = desc[row, col]
+                if cell_type in ['H', 'G']:  # Holes or Goal
+                    state_idx = row * ncol + col
+                    terminal_states.add(state_idx)
+
+        return terminal_states
+
+    def _initialize_q_table(
+        self,
+        num_states: int,
+        num_actions: int,
+        strategy: str,
+        value: float,
+        min_val: float,
+        max_val: float
+    ) -> np.ndarray:
+        """
+        Initialize Q-table based on the selected strategy.
+
+        Args:
+            num_states: Number of states in the environment
+            num_actions: Number of actions in the environment
+            strategy: Initialization strategy ('fixed' or 'random')
+            value: Fixed value for 'fixed' strategy
+            min_val: Minimum value for 'random' strategy
+            max_val: Maximum value for 'random' strategy
+
+        Returns:
+            Initialized Q-table as numpy array
+
+        Raises:
+            ValueError: If strategy is unknown or if min_val >= max_val for random
+        """
+        if strategy == 'fixed':
+            return np.full((num_states, num_actions), value)
+        elif strategy == 'random':
+            if min_val >= max_val:
+                raise ValueError(
+                    f"Invalid Q-value initialization: min ({min_val}) must be less than max ({max_val})"
+                )
+            return np.random.uniform(min_val, max_val, (num_states, num_actions))
+        else:
+            raise ValueError(f"Unknown Q-value initialization strategy: {strategy}")
 
     def _argmax_random_tiebreak(self, q_values: np.ndarray) -> int:
         """
@@ -92,6 +179,12 @@ class QLearning(BaseAlgorithm):
             # Call callback with episode results
             if callback:
                 learning_data = self.get_learning_data()
+
+                # Debug logging every 100 episodes
+                if episode % 100 == 0:
+                    print(f"DEBUG: Episode {episode}: Q-table min={np.min(self.q_table):.4f}, max={np.max(self.q_table):.4f}, mean={np.mean(self.q_table):.4f}")
+                    print(f"DEBUG: Q-table sample (state 0): {self.q_table[0]}")
+
                 callback(episode, total_reward, learning_data, frame)
 
     def play_policy(self, callback: Optional[Callable] = None) -> list:
@@ -206,5 +299,26 @@ class QLearning(BaseAlgorithm):
                 'max': episodes_config['max'],
                 'default': episodes_config['default'],
                 'description': 'Number of training episodes'
+            },
+            'q_init_strategy': {
+                'type': 'string',
+                'default': 'fixed',
+                'options': ['fixed', 'random'],
+                'description': 'Q-value initialization strategy'
+            },
+            'q_init_value': {
+                'type': 'float',
+                'default': 0.0,
+                'description': 'Fixed value for Q-value initialization (used when strategy is "fixed")'
+            },
+            'q_init_min': {
+                'type': 'float',
+                'default': 0.0,
+                'description': 'Minimum bound for random Q-value initialization (used when strategy is "random")'
+            },
+            'q_init_max': {
+                'type': 'float',
+                'default': 1.0,
+                'description': 'Maximum bound for random Q-value initialization (used when strategy is "random")'
             }
         }

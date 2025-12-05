@@ -86,6 +86,8 @@ const ParameterPanel = ({ algorithm, environment, parameters, onParametersChange
       parsedValue = parseInt(value, 10);
     } else if (paramSpec.type === 'float') {
       parsedValue = parseFloat(value);
+    } else if (paramSpec.type === 'string') {
+      parsedValue = value; // Keep as string
     }
 
     onParametersChange({
@@ -132,29 +134,127 @@ const ParameterPanel = ({ algorithm, environment, parameters, onParametersChange
         <p className="hint">Select algorithm</p>
       </div>
 
-      <h3>Parameters</h3>
-      {schema && Object.keys(schema).map(paramName => {
-        const param = schema[paramName];
-        const value = parameters[paramName] || param.default;
+      {/* Q-Value Initialization Section */}
+      <h3>Q-Value Initialization</h3>
 
-        return (
-          <div key={paramName} className="parameter-group">
-            <label>
-              {paramName.replace(/_/g, ' ')}
-              <span className="param-value">{formatNumber(value, paramName)}</span>
-            </label>
-            <input
-              type="range"
-              min={param.min}
-              max={param.max}
-              step={param.type === 'int' ? 1 : 0.01}
-              value={value}
-              onChange={(e) => handleParameterChange(paramName, e.target.value)}
-            />
-            <p className="hint">{param.description}</p>
-          </div>
-        );
-      })}
+      {/* Strategy Dropdown - Always visible */}
+      {schema && schema.q_init_strategy && (
+        <div className="parameter-group">
+          <label>Strategy</label>
+          <select
+            value={parameters.q_init_strategy || schema.q_init_strategy.default}
+            onChange={(e) => handleParameterChange('q_init_strategy', e.target.value)}
+            className="strategy-selector"
+          >
+            {schema.q_init_strategy.options.map(option => (
+              <option key={option} value={option}>
+                {option.charAt(0).toUpperCase() + option.slice(1)}
+              </option>
+            ))}
+          </select>
+          <p className="hint">{schema.q_init_strategy.description}</p>
+        </div>
+      )}
+
+      {/* Fixed Strategy: Show q_init_value */}
+      {parameters.q_init_strategy === 'fixed' && schema && schema.q_init_value && (
+        <div className="parameter-group parameter-indent">
+          <label>
+            Q-Base Value
+            <span className="param-value">
+              {parameters.q_init_value ?? schema.q_init_value.default}
+            </span>
+          </label>
+          <input
+            type="number"
+            step="0.1"
+            value={parameters.q_init_value ?? schema.q_init_value.default}
+            onChange={(e) => handleParameterChange('q_init_value', e.target.value)}
+            className="q-value-input"
+          />
+          <p className="hint">{schema.q_init_value.description}</p>
+        </div>
+      )}
+
+      {/* Random Strategy: Show q_init_min and q_init_max */}
+      {parameters.q_init_strategy === 'random' && schema && (
+        <div className="parameter-indent">
+          {/* Min Value */}
+          {schema.q_init_min && (
+            <div className="parameter-group">
+              <label>
+                Min Value
+                <span className="param-value">
+                  {parameters.q_init_min ?? schema.q_init_min.default}
+                </span>
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={parameters.q_init_min ?? schema.q_init_min.default}
+                onChange={(e) => handleParameterChange('q_init_min', e.target.value)}
+                className="q-value-input"
+              />
+              <p className="hint">{schema.q_init_min.description}</p>
+            </div>
+          )}
+
+          {/* Max Value */}
+          {schema.q_init_max && (
+            <div className="parameter-group">
+              <label>
+                Max Value
+                <span className="param-value">
+                  {parameters.q_init_max ?? schema.q_init_max.default}
+                </span>
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={parameters.q_init_max ?? schema.q_init_max.default}
+                onChange={(e) => handleParameterChange('q_init_max', e.target.value)}
+                className="q-value-input"
+              />
+              <p className="hint">{schema.q_init_max.description}</p>
+            </div>
+          )}
+
+          {/* Validation Warning */}
+          {parameters.q_init_min >= parameters.q_init_max && (
+            <p className="hint error">
+              ⚠️ Min must be less than Max
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Learning Parameters Section */}
+      <h3>Learning Parameters</h3>
+      {schema && Object.keys(schema)
+        .filter(paramName => !paramName.startsWith('q_init_'))
+        .map(paramName => {
+          const param = schema[paramName];
+          const value = parameters[paramName] || param.default;
+
+          return (
+            <div key={paramName} className="parameter-group">
+              <label>
+                {paramName.replace(/_/g, ' ')}
+                <span className="param-value">{formatNumber(value, paramName)}</span>
+              </label>
+              <input
+                type="range"
+                min={param.min}
+                max={param.max}
+                step={param.type === 'int' ? 1 : 0.01}
+                value={value}
+                onChange={(e) => handleParameterChange(paramName, e.target.value)}
+              />
+              <p className="hint">{param.description}</p>
+            </div>
+          );
+        })
+      }
     </div>
   );
 };
