@@ -100,7 +100,12 @@ const ParameterPanel = ({
     if (paramSpec.type === 'int') {
       parsedValue = parseInt(value, 10);
     } else if (paramSpec.type === 'float') {
-      parsedValue = parseFloat(value);
+      // For Q-init parameters (text inputs), keep as string to allow typing intermediate states like "-"
+      if (paramName.startsWith('q_init_')) {
+        parsedValue = value; // Keep as string
+      } else {
+        parsedValue = parseFloat(value);
+      }
     } else if (paramSpec.type === 'string') {
       parsedValue = value; // Keep as string
     }
@@ -222,13 +227,19 @@ const ParameterPanel = ({
             </span>
           </label>
           <input
-            type="number"
-            step="0.1"
+            type="text"
             value={parameters.q_init_value ?? schema.q_init_value.default}
             onChange={(e) => handleParameterChange('q_init_value', e.target.value)}
             className="q-value-input"
           />
           <p className="hint">{schema.q_init_value.description}</p>
+
+          {/* Validation Warning for empty/NaN value */}
+          {(parameters.q_init_value === undefined || parameters.q_init_value === '' || isNaN(parameters.q_init_value)) && (
+            <p className="hint error">
+              ⚠️ Q-Base Value cannot be empty
+            </p>
+          )}
         </div>
       )}
 
@@ -245,8 +256,7 @@ const ParameterPanel = ({
                 </span>
               </label>
               <input
-                type="number"
-                step="0.1"
+                type="text"
                 value={parameters.q_init_min ?? schema.q_init_min.default}
                 onChange={(e) => handleParameterChange('q_init_min', e.target.value)}
                 className="q-value-input"
@@ -265,8 +275,7 @@ const ParameterPanel = ({
                 </span>
               </label>
               <input
-                type="number"
-                step="0.1"
+                type="text"
                 value={parameters.q_init_max ?? schema.q_init_max.default}
                 onChange={(e) => handleParameterChange('q_init_max', e.target.value)}
                 className="q-value-input"
@@ -275,7 +284,17 @@ const ParameterPanel = ({
             </div>
           )}
 
-          {/* Validation Warning */}
+          {/* Validation Warnings */}
+          {(parameters.q_init_min === undefined || parameters.q_init_min === '' || isNaN(parameters.q_init_min)) && (
+            <p className="hint error">
+              ⚠️ Min Value cannot be empty
+            </p>
+          )}
+          {(parameters.q_init_max === undefined || parameters.q_init_max === '' || isNaN(parameters.q_init_max)) && (
+            <p className="hint error">
+              ⚠️ Max Value cannot be empty
+            </p>
+          )}
           {parameters.q_init_min >= parameters.q_init_max && (
             <p className="hint error">
               ⚠️ Min must be less than Max

@@ -50,12 +50,6 @@ class QLearning(BaseAlgorithm):
         for state in self.terminal_states:
             self.q_table[state, :] = 0.0
 
-        print(f"DEBUG: Q-table initialized with strategy='{q_init_strategy}', value={q_init_value} (type={type(q_init_value).__name__}), min={q_init_min} (type={type(q_init_min).__name__}), max={q_init_max} (type={type(q_init_max).__name__})")
-        print(f"DEBUG: Terminal states identified: {sorted(self.terminal_states)}")
-        print(f"DEBUG: Q-table shape: {self.q_table.shape}, dtype: {self.q_table.dtype}")
-        print(f"DEBUG: Q-table min: {np.min(self.q_table)}, max: {np.max(self.q_table)}, mean: {np.mean(self.q_table)}")
-        print(f"DEBUG: Q-table sample (state 0): {self.q_table[0]}")
-
     def _get_terminal_states(self, env) -> set:
         """
         Identify terminal states (holes and goals) from the environment.
@@ -277,21 +271,21 @@ class QLearning(BaseAlgorithm):
                 'min': 0.01,
                 'max': 1.0,
                 'default': 0.1,
-                'description': 'Learning rate (alpha) - controls how much new information overrides old'
+                'description': 'Alpha - controls how much new information overrides old'
             },
             'discount_factor': {
                 'type': 'float',
                 'min': 0.0,
                 'max': 0.99,
                 'default': 0.95,
-                'description': 'Discount factor (gamma) - importance of future rewards'
+                'description': 'Gamma - importance of future rewards'
             },
             'exploration_rate': {
                 'type': 'float',
                 'min': 0.0,
                 'max': 1.0,
                 'default': 0.1,
-                'description': 'Exploration rate (epsilon) - probability of random action'
+                'description': 'Epsilon - probability of random action'
             },
             'num_episodes': {
                 'type': 'int',
@@ -304,21 +298,21 @@ class QLearning(BaseAlgorithm):
                 'type': 'string',
                 'default': 'fixed',
                 'options': ['fixed', 'random'],
-                'description': 'Q-value initialization strategy'
+                'description': ''
             },
             'q_init_value': {
                 'type': 'float',
                 'default': 0.0,
-                'description': 'Fixed value for Q-value initialization (used when strategy is "fixed")'
+                'description': 'Fixed value for Q-value initialization'
             },
             'q_init_min': {
                 'type': 'float',
                 'default': 0.0,
-                'description': 'Minimum bound for random Q-value initialization (used when strategy is "random")'
+                'description': 'Minimum bound for random Q-value initialization'
             },
             'q_init_max': {
                 'type': 'float',
                 'default': 1.0,
-                'description': 'Maximum bound for random Q-value initialization (used when strategy is "random")'
+                'description': 'Maximum bound for random Q-value initialization'
             }
         }
