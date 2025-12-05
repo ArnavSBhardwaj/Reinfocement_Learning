@@ -10,6 +10,15 @@
   border-top: 1px solid #eee;
 }
 
+.parameter-panel h4 {
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #ddd;
+  color: #555;
+}
+
 .parameter-group {
   margin-bottom: 1.5rem;
 }

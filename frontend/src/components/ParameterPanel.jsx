@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { getParameterSchema, getEnvironments, getAlgorithms } from '../api';
+import ControlButtons from './ControlButtons';
 import './ParameterPanel.css';
 
-const ParameterPanel = ({ algorithm, environment, parameters, onParametersChange, onAlgorithmChange, onEnvironmentChange }) => {
+const ParameterPanel = ({
+  algorithm,
+  environment,
+  parameters,
+  onParametersChange,
+  onAlgorithmChange,
+  onEnvironmentChange,
+  onStartTraining,
+  onStopTraining,
+  onPlayPolicy,
+  isTraining,
+  isPlayback,
+  canPlayPolicy,
+  disabled
+}) => {
   const [schema, setSchema] = useState(null);
   const [environments, setEnvironments] = useState([]);
   const [algorithms, setAlgorithms] = useState([]);
@@ -134,8 +149,49 @@ const ParameterPanel = ({ algorithm, environment, parameters, onParametersChange
         <p className="hint">Select algorithm</p>
       </div>
 
-      {/* Q-Value Initialization Section */}
-      <h3>Q-Value Initialization</h3>
+      {/* Control Buttons */}
+      <ControlButtons
+        onStartTraining={onStartTraining}
+        onStopTraining={onStopTraining}
+        onPlayPolicy={onPlayPolicy}
+        isTraining={isTraining}
+        isPlayback={isPlayback}
+        canPlayPolicy={canPlayPolicy}
+        disabled={disabled}
+      />
+
+      {/* Learning Parameters Section */}
+      <h3>Learning Parameters</h3>
+
+      {/* Core learning parameters in desired order: num_episodes, exploration_rate, learning_rate, discount_factor */}
+      {schema && ['num_episodes', 'exploration_rate', 'learning_rate', 'discount_factor']
+        .filter(paramName => schema[paramName]) // Only include if parameter exists in schema
+        .map(paramName => {
+          const param = schema[paramName];
+          const value = parameters[paramName] || param.default;
+
+          return (
+            <div key={paramName} className="parameter-group">
+              <label>
+                {paramName.replace(/_/g, ' ')}
+                <span className="param-value">{formatNumber(value, paramName)}</span>
+              </label>
+              <input
+                type="range"
+                min={param.min}
+                max={param.max}
+                step={param.type === 'int' ? 1 : 0.01}
+                value={value}
+                onChange={(e) => handleParameterChange(paramName, e.target.value)}
+              />
+              <p className="hint">{param.description}</p>
+            </div>
+          );
+        })
+      }
+
+      {/* Q-Value Initialization Subsection */}
+      <h4>Q-Value Initialization</h4>
 
       {/* Strategy Dropdown - Always visible */}
       {schema && schema.q_init_strategy && (
@@ -227,34 +283,6 @@ const ParameterPanel = ({ algorithm, environment, parameters, onParametersChange
           )}
         </div>
       )}
-
-      {/* Learning Parameters Section */}
-      <h3>Learning Parameters</h3>
-      {schema && Object.keys(schema)
-        .filter(paramName => !paramName.startsWith('q_init_'))
-        .map(paramName => {
-          const param = schema[paramName];
-          const value = parameters[paramName] || param.default;
-
-          return (
-            <div key={paramName} className="parameter-group">
-              <label>
-                {paramName.replace(/_/g, ' ')}
-                <span className="param-value">{formatNumber(value, paramName)}</span>
-              </label>
-              <input
-                type="range"
-                min={param.min}
-                max={param.max}
-                step={param.type === 'int' ? 1 : 0.01}
-                value={value}
-                onChange={(e) => handleParameterChange(paramName, e.target.value)}
-              />
-              <p className="hint">{param.description}</p>
-            </div>
-          );
-        })
-      }
     </div>
   );
 };

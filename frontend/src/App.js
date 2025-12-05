@@ -6,7 +6,6 @@ import EnvironmentInfo from './components/EnvironmentInfo';
 import AlgorithmInfo from './components/AlgorithmInfo';
 import RewardChart from './components/RewardChart';
 import LearningVisualization from './components/LearningVisualization';
-import ControlButtons from './components/ControlButtons';
 import { startTraining, subscribeToTraining, subscribeToPlayback, resetTraining, getEnvironmentPreview } from './api';
 
 // Calculate adaptive window size: 10% of episodes, clamped between 10 and 100
@@ -311,8 +310,6 @@ function App() {
             onParametersChange={setParameters}
             onAlgorithmChange={setSelectedAlgorithm}
             onEnvironmentChange={setSelectedEnvironment}
-          />
-          <ControlButtons
             onStartTraining={handleStartTraining}
             onStopTraining={handleStopTraining}
             onPlayPolicy={handlePlayPolicy}
