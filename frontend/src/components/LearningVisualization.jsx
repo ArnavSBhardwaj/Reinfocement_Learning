@@ -157,8 +157,8 @@ const LearningVisualization = ({ learningData, algorithm }) => {
       </div>
 
       <p className="hint">
-        Arrow colors show absolute Q-values across the entire table (violet = global min, orange = global max).
-        Cyan borders highlight the best action for each state (no border shown if there's a tie).
+        Arrow colors show Q-values across the entire table (violet = global min, orange = global max).
+        Cyan borders highlight the greedy action (highest Q-value) for each state (not shown if there's a tie).
       </p>
     </div>
   );

@@ -3,7 +3,7 @@
     "name": "Q-Learning",
     "description": "A simple tabular reinforcement learning algorithm that learns the value of actions in states.",
     "sections": {
-      "whatIsIt": "Q-Learning learns a Q-function Q(s,a) that estimates the expected cumulative reward of taking action 'a' in state 's' and following the optimal policy thereafter.",
+      "whatIsIt": "Q-Learning learns a Q-function Q(s,a) that estimates the expected cumulative reward of taking action 'a' in state 's' and following the optimal policy thereafter. During training, the agent explores the environment using an ε-greedy policy to balance exploration and exploitation. After training, the learned (estimated!) Q-values can be used to derive an optimal policy by selecting the action with the highest Q-value in each state (greedy policy).",
       "howItWorks": [
         "Initialize Q-table",
         "Observe current state",

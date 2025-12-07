@@ -4,27 +4,36 @@
 
 ## Project Overview
 
-RL Playground is an educational web interface for exploring reinforcement learning algorithms interactively. Users control learning parameters and watch agents train in real-time.
+RL Lab is an educational web interface for exploring reinforcement learning algorithms interactively. Users control learning parameters and watch agents train in real-time.
 
 **Phase 1 Scope**: Q-Learning (tabular) on FrozenLake-v1 only. Future phases will add stable-baselines3 algorithms (DQN, PPO, SAC) and more Gym environments.
 
-## Development Commands
+## Development Workflow
 
-### Backend (Python/Flask)
+> **Primary workflow**: Docker (recommended)
+>
+> **Alternative**: [DEVELOPMENT.md](DEVELOPMENT.md) for local setup without Docker
+
+### Quick Start with Docker
 ```bash
-cd backend
-uv sync                    # Install dependencies and create virtual environment
-uv run python app.py       # Run Flask server (uv automatically uses venv)
+docker-compose up -d       # Start all services (detached mode)
+docker-compose logs -f     # View live logs
+docker-compose down        # Stop all services
+docker-compose restart     # Restart services
 ```
 
-**Important**: Use `uv sync` to install dependencies from `pyproject.toml`. Use `uv run` to execute commands in the virtual environment.
-
-### Frontend (React)
+### Running Tests
 ```bash
-cd frontend
-npm install
-npm start                  # Run development server on localhost:3030
+# Backend tests
+docker-compose exec backend pytest
+
+# Frontend tests (in separate terminal)
+cd frontend && npm test
 ```
+
+### Making Code Changes
+- **Backend**: Changes require container restart (`docker-compose restart backend`)
+- **Frontend**: Hot-reload enabled, changes reflect immediately
 
 ## Critical Architecture Decisions
 
@@ -69,37 +78,55 @@ The architecture is designed for future compatibility with stable-baselines3:
 
 ```
 backend/
-├── app.py                      # Flask API (7 endpoints)
+├── app.py                      # Flask API (9 endpoints)
 ├── algorithms/
 │   ├── __init__.py             # AlgorithmFactory
 │   ├── base_algorithm.py       # Abstract base class
 │   └── q_learning.py           # Q-Learning implementation
 ├── environments/
+│   ├── __init__.py
 │   └── environment_manager.py  # Gym env creation, frame→base64 conversion
 ├── training/
+│   ├── __init__.py
 │   └── trainer.py              # Session management, UUID-based
+├── tests/                      # Test suite
+│   ├── test_algorithms/
+│   ├── test_api/
+│   ├── test_environments/
+│   └── test_training/
 └── pyproject.toml              # uv project config
 
 frontend/
 ├── src/
 │   ├── components/
-│   │   ├── ParameterPanel.jsx          # Dynamic controls from schema
+│   │   ├── AlgorithmInfo.jsx           # Algorithm documentation panel
+│   │   ├── ControlButtons.jsx          # Start/Stop/Play Policy buttons
+│   │   ├── EnvironmentInfo.jsx         # Environment description panel
 │   │   ├── EnvironmentViewer.jsx       # Display base64 frames
-│   │   ├── RewardChart.jsx             # Recharts line chart
 │   │   ├── LearningVisualization.jsx   # Q-table heatmap (4×4 grid)
-│   │   └── ControlButtons.jsx          # Start/Reset/Play Policy
-│   ├── App.jsx                          # State orchestration
-│   └── api.js                           # Backend communication + SSE
+│   │   ├── ParameterPanel.jsx          # Dynamic controls from schema
+│   │   ├── RewardChart.jsx             # Recharts line chart
+│   │   └── __tests__/                  # Component tests
+│   ├── content/
+│   │   └── algorithms.json             # Algorithm documentation content
+│   ├── utils/
+│   │   └── contentLoader.js            # Load algorithm/environment info
+│   ├── api.js                          # Backend communication + SSE
+│   ├── App.js                          # State orchestration
+│   └── setupTests.js                   # Test configuration
 └── package.json
 ```
 
 ## Backend Implementation Details
 
 ### Q-Learning Specifics
-- Initialize Q-table as zeros: `np.zeros((num_states, num_actions))`
-- Epsilon-greedy exploration
+- Initialize Q-table with configurable strategy:
+  - Fixed value: `np.full((num_states, num_actions), value)`
+  - Random uniform: `np.random.uniform(min, max, (num_states, num_actions))`
+  - Terminal states forced to 0 (by RL theory)
+- Epsilon-greedy exploration with random tie-breaking
 - Standard Q-learning update rule: `Q[s,a] = Q[s,a] + α * (r + γ * max(Q[s']) - Q[s,a])`
-- Parameters: learning_rate (α), discount_factor (γ), exploration_rate (ε), num_episodes
+- Parameters: learning_rate (α), discount_factor (γ), exploration_rate (ε), num_episodes, q_init_strategy, q_init_value/min/max
 
 ### Environment Manager
 - Create envs with `render_mode="rgb_array"`
@@ -107,14 +134,16 @@ frontend/
 - Phase 1: Only FrozenLake-v1 supported
 - Validate environment names
 
-### Flask API Endpoints (7 total)
-1. `GET /api/algorithms` - List available algorithms
-2. `GET /api/environments` - List available environments
-3. `GET /api/parameters/<algorithm>` - Get parameter schema
-4. `POST /api/train` - Start training, return session_id
-5. `GET /api/train/stream/<session_id>` - SSE training updates
-6. `GET /api/play-policy/stream/<session_id>` - SSE policy playback
-7. `POST /api/reset` - Clear all sessions
+### Flask API Endpoints (9 total)
+1. `GET /test` - Simple test route for debugging
+2. `GET /api/algorithms` - List available algorithms
+3. `GET /api/environments` - List available environments
+4. `GET /api/environments/<env_name>/preview` - Get environment preview frame
+5. `GET /api/parameters/<algorithm>` - Get parameter schema (with optional environment query param)
+6. `POST /api/train` - Start training, return session_id
+7. `GET /api/train/stream/<session_id>` - SSE training updates
+8. `GET /api/play-policy/stream/<session_id>` - SSE policy playback
+9. `POST /api/reset` - Clear all sessions
 
 ### SSE Event Formats
 

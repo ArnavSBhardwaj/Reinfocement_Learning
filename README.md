@@ -1,7 +1,7 @@
 # RL I - Introduction
 
 # RL Lab
-An educational web interface for building intuition about reinforcement learning fundamentals. The interface visualizes how RL algorithms learn. The backend is build on the well-known environments of the [gymnasium library](https://gymnasium.farama.org). Users can change environments, algorithms and parameters.
+An educational interface for building intuition about reinforcement learning fundamentals. The backend is build on the environments of the [gymnasium library](https://gymnasium.farama.org). 
 
 **Current Implementation**: 
 - environments
@@ -10,27 +10,33 @@ An educational web interface for building intuition about reinforcement learning
 - algorithms
    - Q-learning (custom build)
 
-**Design**: Modular architecture designed for easy extension with new algorithms and environments
+![Application Screenshot](docs/screenshots/app/main-interface.png)
 
 ## Quick Start (Experienced Users)
 
-Already have Docker installed? Get started in 3 commands:
+Already have git and Docker installed? Get started in 3 commands:
 
 **Prerequisites**: Docker Desktop running or Docker Engine
 
+1. Clone the repository
 ```bash
-# 1. Clone the repository
 git clone https://github.com/aihpi/workshop-rl1-introduction.git
-cd workshop-rl1-introduction
-
-# 2. Start with Docker (detached mode)
-docker-compose up -d
-
-# 3. Open browser to http://localhost:3030
 ```
 
-**First-time setup takes ~1-2 minutes** (downloads pre-built images).
+2. Navigate inside
+```bash
+cd workshop-rl1-introduction
+```
 
+3. Is Docker running? Then you can start the app (detached mode)
+```bash
+docker-compose up -d
+```
+
+4. Open browser to http://localhost:3030
+
+
+**First-time setup takes ~1-2 minutes** (downloads pre-built images).
 
 **Note**: Running in detached mode (`-d`) keeps your terminal free. To view logs if needed for debugging, open a separate terminal and run `docker-compose logs -f`
 
@@ -38,7 +44,7 @@ docker-compose up -d
 
 ## Installation (Beginners)
 
-**New to programming or Docker?** Follow our step-by-step installation guides with screenshots:
+**New to programming or Docker?** Follow our step-by-step installation guides:
 
 ### Choose Your Operating System:
 
@@ -65,16 +71,6 @@ docker-compose up -d
 </tr>
 </table>
 
-**Each guide includes**:
-- ✅ How to open terminal/command prompt
-- ✅ Installing Git step-by-step
-- ✅ Installing Docker with screenshots
-- ✅ Downloading and running RL Lab
-- ✅ Troubleshooting common issues
-- ✅ Screenshots for every step (coming soon)
-
-**No prior experience required!** The guides assume you're starting from scratch.
-
 ---
 
 ### Useful Docker Commands
@@ -90,32 +86,7 @@ docker-compose logs frontend   # View only frontend logs
 docker-compose ps              # Check container status
 docker-compose restart         # Restart services
 ```
-
-**Access the application**:
-- **Frontend**: http://localhost:3030
-- **Backend API**: http://localhost:5001
-
 ---
-
-### Advanced: Local Setup (Without Docker)
-
-**Not recommended for workshops**, but possible for development:
-
-**Prerequisites**: Python 3.9+, Node.js 14+, [uv](https://github.com/astral-sh/uv)
-
-**Backend**:
-```bash
-cd backend
-uv sync                    # Install dependencies
-uv run python app.py       # Start server (http://localhost:5001)
-```
-
-**Frontend** (in new terminal):
-```bash
-cd frontend
-npm install                # Install dependencies
-npm start                  # Start server (http://localhost:3030)
-```
 
 ## Usage
 
@@ -128,13 +99,11 @@ npm start                  # Start server (http://localhost:3030)
    - **Number of Episodes**: Training duration (1-10000)
 
 3. **Start training**: Click "Start Training" and watch real-time visualizations:
-   - **Environment viewer**: Shows agent's position in FrozenLake
+   - **Environment viewer**: Renders agent's last position of a training episode
    - **Reward chart**: Tracks training progress with statistics
    - **Q-table heatmap**: Visualizes learned action values (4×4 grid)
 
-4. **Play policy**: After training completes, click "Play Policy" to watch the trained agent execute its learned behavior step-by-step
-
-5. **Reset**: Click "Reset" to clear all data and train again with different parameters
+4. **Play policy**: After training completes, click "Play Policy" to watch the trained agent execute its learned behavior step-by-step.
 
 ## Testing
 
@@ -176,23 +145,13 @@ workshop-rl1-introduction/
 │   │   └── api.js         # Backend communication
 │   └── src/components/__tests__/  # Frontend test suite
 ├── docs/
-│   └── ARCHITECTURE.md    # Architecture decisions & technical details
-├── tutorials/
-│   └── docker-workflow.md # Docker setup guide for beginners
-├── docker-compose.yml     # Multi-container orchestration
-└── CHANGELOG.md           # Version history
+│   ├── DEVELOPMENT.md          # Local development setup (without Docker)
+│   ├── INSTALLATION_LINUX.md   # Linux installation guide
+│   ├── INSTALLATION_MACOS.md   # macOS installation guide
+│   ├── INSTALLATION_WINDOWS.md # Windows installation guide
+│   └── screenshots/            # Documentation screenshots
+└── docker-compose.yml     # Multi-container orchestration
 ```
-
-**Key architectural concepts**:
-- **Backend**: Flask REST API + Server-Sent Events (SSE) for real-time streaming
-- **Frontend**: React with Recharts for visualization
-- **Modularity**: Factory pattern for algorithms, designed for easy extension
-
-## Documentation
-
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Technical architecture, design decisions, API endpoints
-- **[Docker Workflow Guide](tutorials/docker-workflow.md)** - Beginner-friendly Docker tutorial
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
 
 ## FrozenLake Environment
 
