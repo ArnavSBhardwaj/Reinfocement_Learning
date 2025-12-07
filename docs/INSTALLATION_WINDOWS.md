@@ -1,11 +1,5 @@
 # 📱 Windows Installation Guide
 
-Complete step-by-step installation guide for RL Lab on Windows 10/11.
-
-**Estimated time**: 10-15 minutes for first-time setup
-
----
-
 ## Prerequisites Checklist
 
 Before you begin, make sure you have:
@@ -13,8 +7,7 @@ Before you begin, make sure you have:
 - [ ] Windows 10 64-bit (version 1903 or higher) or Windows 11
 - [ ] Administrator access to install software
 - [ ] At least 4GB RAM (8GB recommended)
-- [ ] At least 2GB free disk space
-- [ ] Active internet connection
+- [ ] At least 4GB free disk space
 
 ---
 
@@ -26,14 +19,10 @@ The Command Prompt (also called "terminal" or "cmd") is where you'll type comman
 1. Press `Windows Key + R` on your keyboard
 2. Type `cmd` and press Enter
 
-![Opening cmd with Win+R](installation-screenshots/windows/01-open-cmd-winr.png)
-
 ### Option 2: Using Start Menu Search
 1. Click the Start menu (Windows icon in bottom-left)
 2. Type `cmd` in the search box
 3. Click "Command Prompt" in the results
-
-![Opening cmd from Start menu](installation-screenshots/windows/02-open-cmd-start.png)
 
 ### Option 3: Right-click Start Menu
 1. Right-click the Start menu (Windows icon)
@@ -54,7 +43,6 @@ Git is a tool that helps you download code from the internet (like this project)
 3. The download should start automatically
 4. If not, click the "Click here to download" link
 
-![Git download page](installation-screenshots/windows/03-git-download.png)
 
 ### 2.2 Install Git
 
@@ -72,7 +60,6 @@ Git is a tool that helps you download code from the internet (like this project)
 5. Click "Install" and wait for installation to complete
 6. Click "Finish"
 
-![Git installer](installation-screenshots/windows/04-git-installer.png)
 
 ### 2.3 Verify Git Installation
 
@@ -88,7 +75,6 @@ Git is a tool that helps you download code from the internet (like this project)
 git version 2.43.0.windows.1
 ```
 
-![Git version check](installation-screenshots/windows/05-git-version.png)
 
 **❌ If you see "git is not recognized"**:
 - Make sure you closed the old Command Prompt and opened a new one
@@ -103,7 +89,7 @@ Docker is software that runs the RL Lab application in an isolated environment, 
 
 ### 3.1 Check System Requirements
 
-Docker Desktop requires **WSL 2** (Windows Subsystem for Linux). Most modern Windows installations already have this, but we'll verify.
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) requires **WSL 2** (Windows Subsystem for Linux). Most modern Windows installations already have this, but we'll verify.
 
 1. Open Command Prompt as **Administrator**:
    - Press `Windows Key + R`
@@ -131,7 +117,6 @@ After restart, open Command Prompt and verify:
 wsl --status
 ```
 
-![WSL status check](installation-screenshots/windows/06-wsl-status.png)
 
 ### 3.2 Download Docker Desktop
 
@@ -140,7 +125,6 @@ wsl --status
 3. Click the big **"Download for Windows"** button
 4. Wait for the download to complete (file is about 500MB)
 
-![Docker Desktop download page](installation-screenshots/windows/07-docker-download.png)
 
 ### 3.3 Install Docker Desktop
 
@@ -155,7 +139,6 @@ wsl --status
 6. Click "Close" when done
 7. **Restart your computer** if prompted
 
-![Docker Desktop installer](installation-screenshots/windows/08-docker-installer.png)
 
 ### 3.4 Start Docker Desktop
 
@@ -168,7 +151,6 @@ wsl --status
 
 **✅ Success Check**: Look for the Docker whale icon in your system tray (bottom-right corner, near the clock). When Docker is running, the whale icon will be steady (not animating).
 
-![Docker running in system tray](installation-screenshots/windows/09-docker-running.png)
 
 ### 3.5 Verify Docker Installation
 
@@ -183,7 +165,6 @@ wsl --status
 Docker version 24.0.7, build afdd53b
 ```
 
-![Docker version check](installation-screenshots/windows/10-docker-version.png)
 
 **❌ Troubleshooting**:
 
@@ -230,7 +211,6 @@ Receiving objects: 100% (543/543), 2.1 MiB | 5.2 MiB/s, done.
 Resolving deltas: 100% (215/215), done.
 ```
 
-![Git clone in progress](installation-screenshots/windows/11-git-clone.png)
 
 ### 4.3 Enter the Project Directory
 
@@ -245,7 +225,6 @@ cd workshop-rl1-introduction
 - docs
 - And files like README.md, docker-compose.yml
 
-![Project directory contents](installation-screenshots/windows/12-directory-contents.png)
 
 **❌ If git clone fails**:
 - Check your internet connection
@@ -287,11 +266,13 @@ Press Enter and wait...
 
 **When ready, you'll see**:
 ```
-✔ Container workshop-rl1-introduction-backend   Started
-✔ Container workshop-rl1-introduction-frontend  Started
+C:\Users\YourName\workshop-rl1-introduction> docker-compose up -d
+[+] Running 3/3
+ ✔ Network workshop-rl1-introduction_rl-network  Created                                                                                                                                                                                                                                              0.0s
+ ✔ Container workshop-rl1-introduction-backend   Started                                                                                                                                                                                                                                              5.3s
+ ✔ Container workshop-rl1-introduction-frontend  Started
 ```
 
-![Docker compose running](installation-screenshots/windows/13-docker-compose-up.png)
 
 **✅ Success**: Your Command Prompt is now free to use for other commands! The services are running in the background (detached mode with `-d`).
 
@@ -314,16 +295,12 @@ This shows live logs from both services. Press `Ctrl + C` to stop viewing logs (
 
 🎉 You're ready to use RL Lab!
 
-1. Open your web browser (Chrome, Firefox, Edge, Safari - any browser works)
-2. In the address bar, type: **`http://localhost:3030`**
-3. Press Enter
+Open your web browser and go to: **`http://localhost:3030`**
 
-**✅ Success!** You should see the RL Lab interface with:
-- Parameter controls on the left
-- Environment viewer in the center
-- Visualization panels on the right
+**✅ Success!** You should see the RL Lab interface:
 
-![RL Lab interface](installation-screenshots/app/01-interface.png)
+![Application Screenshot](../docs/screenshots/app/main-interface.png)
+
 
 ---
 
@@ -336,10 +313,8 @@ Now that RL Lab is running, let's see it in action:
    - Environment viewer shows the agent's position in FrozenLake
    - Reward chart shows learning progress
    - Q-table heatmap shows learned values
-3. **Wait for training to complete** (with default settings, takes about 10-20 seconds)
+3. **Wait for training to complete**
 4. **Click "Play Policy"** - Watch the trained agent navigate from start to goal!
-
-![RL Lab training](installation-screenshots/app/02-training.png)
 
 ---
 
@@ -480,23 +455,3 @@ If you want to keep the other application running, change RL Lab's ports:
 1. Check Command Prompt window for backend error messages
 2. Try clicking "Reset" and then "Start Training" again
 3. Refresh the browser page
-
----
-
-## Next Steps
-
-✅ **Installation complete!** You're ready to explore reinforcement learning.
-
-**Learn More**:
-- [README.md](../README.md) - Project overview and features
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical details about how RL Lab works
-- [Docker Workflow Guide](../tutorials/docker-workflow.md) - Advanced Docker usage
-
-**Need Help?**
-- Check the troubleshooting section above
-- Ask your workshop instructor
-- Open an issue on GitHub: https://github.com/aihpi/workshop-rl1-introduction/issues
-
----
-
-**🎓 Ready to learn? Start experimenting with different parameters and see how they affect the agent's learning!**

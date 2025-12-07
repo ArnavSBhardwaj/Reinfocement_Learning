@@ -1,59 +1,22 @@
 # 🐧 Linux Installation Guide
 
-Complete step-by-step installation guide for RL Lab on Linux (Ubuntu/Debian-based distributions).
-
-**Estimated time**: 10-15 minutes for first-time setup
-
----
-
 ## Prerequisites Checklist
 
 Before you begin, make sure you have:
 
-- [ ] Ubuntu 20.04+ or Debian 11+ (or equivalent distribution)
+- [ ] [Docker Desktop for Linux System Requirements](https://docs.docker.com/desktop/install/linux-install/#system-requirements)
 - [ ] Administrator (sudo) access
 - [ ] At least 4GB RAM (8GB recommended)
-- [ ] At least 2GB free disk space
-- [ ] Active internet connection
+- [ ] At least 4GB free disk space
 
 ---
 
 ## Step 1: Open Terminal
 
-Terminal is where you'll type commands to set up the project.
-
-### Option 1: Keyboard Shortcut (Fastest)
-1. Press `Ctrl + Alt + T` on your keyboard
-2. Terminal opens immediately
-
-### Option 2: Using Activities Search
-1. Click **Activities** in the top-left corner (or press the Super/Windows key)
-2. Type `Terminal`
-3. Click the Terminal icon
-
-### Option 3: Right-click Desktop
-1. Right-click on an empty area of your desktop
-2. Select **"Open Terminal"** or **"Open in Terminal"** (if available on your distribution)
-
-**✅ Success Check**: You should see a window with text like `username@hostname:~$`
-
-![Terminal window open](installation-screenshots/linux/01-terminal-open.png)
-
----
-
 ## Step 2: Install Git
+Follow the official instructions:
 
-Git is a tool that helps you download code from the internet (like this project).
-
-### Quick Installation
-
-In Terminal, type:
-```bash
-sudo apt update && sudo apt install git -y
-```
-
-You'll be asked for your password. Type it and press Enter.
-**Note**: You won't see characters appear as you type your password - this is normal for security reasons.
+https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
 ### Verify Git Installation
 
@@ -68,8 +31,6 @@ git version 2.34.1
 ```
 
 **📖 Need detailed help?** See the [official Git installation guide for Linux](https://git-scm.com/download/linux)
-
-![Git version check](installation-screenshots/linux/03-git-version.png)
 
 ---
 
@@ -95,8 +56,6 @@ The official guide provides:
 - Distribution-specific instructions
 - Prerequisites and dependencies
 - Post-installation setup
-
-![Docker Desktop download page](installation-screenshots/linux/04-docker-download.png)
 
 ### 3.2 Install Docker Desktop
 
@@ -144,8 +103,6 @@ docker compose version
 Docker Compose version v2.21.0
 ```
 
-![Docker version check](installation-screenshots/linux/07-docker-version.png)
-
 **❌ Troubleshooting**:
 - **"command not found"**: Docker Desktop may not be in your PATH. Try restarting your terminal or logging out/in.
 - **"Cannot connect to Docker daemon"**: Docker Desktop is not running. Start it from your applications menu.
@@ -175,35 +132,12 @@ Type this command and press Enter:
 git clone https://github.com/aihpi/workshop-rl1-introduction.git
 ```
 
-**What you'll see**: Git will download all the project files. This takes about 10-30 seconds.
-
-Output should look like:
-```
-Cloning into 'workshop-rl1-introduction'...
-remote: Enumerating objects: 543, done.
-remote: Counting objects: 100% (543/543), done.
-remote: Compressing objects: 100% (312/312), done.
-remote: Total 543 (delta 215), reused 489 (delta 178), pack-reused 0
-Receiving objects: 100% (543/543), 2.1 MiB | 5.2 MiB/s, done.
-Resolving deltas: 100% (215/215), done.
-```
-
-![Git clone in progress](installation-screenshots/linux/05-git-clone.png)
-
 ### 4.3 Enter the Project Directory
 
 Now move into the project folder:
 ```bash
 cd workshop-rl1-introduction
 ```
-
-**✅ Success Check**: Type `ls` and press Enter. You should see folders and files like:
-```
-backend/        frontend/       docs/
-README.md       docker-compose.yml
-```
-
-![Project directory contents](installation-screenshots/linux/06-directory-contents.png)
 
 ---
 
@@ -240,11 +174,12 @@ Press Enter and wait...
 
 **When ready, you'll see**:
 ```
-✔ Container workshop-rl1-introduction-backend   Started
-✔ Container workshop-rl1-introduction-frontend  Started
+username@hostname:~/workshop-rl1-introduction$ docker compose up -d
+[+] Running 3/3
+ ✔ Network workshop-rl1-introduction_rl-network  Created                                                                                                                                                                                                                                              0.0s
+ ✔ Container workshop-rl1-introduction-backend   Started                                                                                                                                                                                                                                              5.3s
+ ✔ Container workshop-rl1-introduction-frontend  Started
 ```
-
-![Docker compose running](installation-screenshots/linux/08-docker-compose-up.png)
 
 **✅ Success**: Your terminal is now free to use for other commands! The services are running in the background (detached mode with `-d`).
 
@@ -268,18 +203,11 @@ This shows live logs from both services. Press `Ctrl + C` to stop viewing logs (
 
 ## Step 6: Access RL Lab in Your Browser
 
-🎉 You're ready to use RL Lab!
+Open your web browser to **`http://localhost:3030`**
 
-1. Open your web browser (Firefox, Chrome, Chromium - any browser works)
-2. In the address bar, type: **`http://localhost:3030`**
-3. Press Enter
+**✅ Success!** You should see the RL Lab interface:
 
-**✅ Success!** You should see the RL Lab interface with:
-- Parameter controls on the left
-- Environment viewer in the center
-- Visualization panels on the right
-
-![RL Lab interface](installation-screenshots/app/01-interface.png)
+![Application Screenshot](../docs/screenshots/app/main-interface.png)
 
 ---
 
@@ -292,10 +220,8 @@ Now that RL Lab is running, let's see it in action:
    - Environment viewer shows the agent's position in FrozenLake
    - Reward chart shows learning progress
    - Q-table heatmap shows learned values
-3. **Wait for training to complete** (with default settings, takes about 10-20 seconds)
+3. **Wait for training to complete** 
 4. **Click "Play Policy"** - Watch the trained agent navigate from start to goal!
-
-![RL Lab training](installation-screenshots/app/02-training.png)
 
 ---
 
@@ -391,29 +317,4 @@ docker compose up -d
 ### Training doesn't start or shows errors
 **Solutions**:
 1. View logs for backend error messages: `docker compose logs backend`
-2. Try clicking "Reset" and then "Start Training" again
-3. Refresh the browser page
-
----
-
-## Next Steps
-
-✅ **Installation complete!** You're ready to explore reinforcement learning.
-
-**Learn More**:
-- [README.md](../README.md) - Project overview and features
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical details about how RL Lab works
-- [Docker Workflow Guide](../tutorials/docker-workflow.md) - Advanced Docker usage
-
-**Official Documentation**:
-- [Docker Desktop for Linux](https://docs.docker.com/desktop/install/linux-install/)
-- [Git for Linux](https://git-scm.com/download/linux)
-
-**Need Help?**
-- Check the troubleshooting section above
-- Ask your workshop instructor
-- Open an issue on GitHub: https://github.com/aihpi/workshop-rl1-introduction/issues
-
----
-
-**🎓 Ready to learn? Start experimenting with different parameters and see how they affect the agent's learning!**
+2. Refresh the browser page

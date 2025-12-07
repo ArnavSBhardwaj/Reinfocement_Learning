@@ -5,8 +5,8 @@ An educational interface for building intuition about reinforcement learning fun
 
 **Current Implementation**: 
 - environments
-   - Gymnasium FrozenLake-v1 (4x4) with `is_slippery=True`
-   - Gymnasium FrozenLake-v1 (4x4) with `is_slippery=False`
+   - [Gymnasium FrozenLake-v1](https://gymnasium.farama.org/environments/toy_text/frozen_lake/) (4x4) with `is_slippery=True`
+   - [Gymnasium FrozenLake-v1](https://gymnasium.farama.org/environments/toy_text/frozen_lake/) (4x4) with `is_slippery=False`
 - algorithms
    - Q-learning (custom build)
 
@@ -30,7 +30,7 @@ cd workshop-rl1-introduction
 
 3. Is Docker running? Then you can start the app (detached mode)
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 4. Open browser to http://localhost:3030
@@ -38,13 +38,13 @@ docker-compose up -d
 
 **First-time setup takes ~1-2 minutes** (downloads pre-built images).
 
-**Note**: Running in detached mode (`-d`) keeps your terminal free. To view logs if needed for debugging, open a separate terminal and run `docker-compose logs -f`
+**Note**: Running in detached mode (`-d`) keeps your terminal free. To view logs if needed for debugging, open a separate terminal and run `docker compose logs -f`
 
 ---
 
 ## Installation (Beginners)
 
-**New to programming or Docker?** Follow our step-by-step installation guides:
+**New to programming or Docker?** Follow the installation guides:
 
 ### Choose Your Operating System:
 
@@ -78,13 +78,13 @@ docker-compose up -d
 Once installed, here are some helpful commands:
 
 ```bash
-docker-compose up -d           # Start the application (detached mode)
-docker-compose down            # Stop the application
-docker-compose logs -f         # View live logs (for debugging, in separate terminal)
-docker-compose logs backend    # View only backend logs
-docker-compose logs frontend   # View only frontend logs
-docker-compose ps              # Check container status
-docker-compose restart         # Restart services
+docker compose up -d           # Start the application (detached mode)
+docker compose down            # Stop the application
+docker compose logs -f         # View live logs (for debugging, in separate terminal)
+docker compose logs backend    # View only backend logs
+docker compose logs frontend   # View only frontend logs
+docker compose ps              # Check container status
+docker compose restart         # Restart services
 ```
 ---
 
@@ -93,10 +93,10 @@ docker-compose restart         # Restart services
 1. **Open the application** in your browser at http://localhost:3030
 
 2. **Adjust parameters** using the sliders:
-   - **Learning Rate (α)**: How fast the agent learns (0.01-1.0)
-   - **Discount Factor (γ)**: Importance of future rewards (0.0-1.0)
-   - **Exploration Rate (ε)**: Probability of random exploration (0.0-1.0)
-   - **Number of Episodes**: Training duration (1-10000)
+   - **Number of Episodes**: Training duration 
+   - **Exploration Rate (ε)**: Probability of random exploration
+   - **Learning Rate (α)**: How fast the agent learns 
+   - **Discount Factor (γ)**: Importance of future rewards 
 
 3. **Start training**: Click "Start Training" and watch real-time visualizations:
    - **Environment viewer**: Renders agent's last position of a training episode
@@ -113,7 +113,7 @@ docker-compose restart         # Restart services
 cd backend && uv run pytest
 
 # In Docker
-docker-compose exec backend pytest
+docker compose exec backend pytest
 ```
 
 **Frontend** (12 tests):
@@ -152,16 +152,6 @@ workshop-rl1-introduction/
 │   └── screenshots/            # Documentation screenshots
 └── docker-compose.yml     # Multi-container orchestration
 ```
-
-## FrozenLake Environment
-
-FrozenLake is a 4×4 grid world where the agent must navigate from Start (S) to Goal (G):
-- **S**: Start position
-- **F**: Frozen surface (safe)
-- **H**: Hole (episode ends, 0 reward)
-- **G**: Goal (episode ends, +1 reward)
-
-The ice is slippery - actions are stochastic (agent may slip in perpendicular directions).
 
 ## License
 

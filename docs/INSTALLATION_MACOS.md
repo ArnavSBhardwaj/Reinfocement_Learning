@@ -10,11 +10,10 @@ Complete step-by-step installation guide for RL Lab on macOS.
 
 Before you begin, make sure you have:
 
-- [ ] macOS 10.15 (Catalina) or newer
+- [ ] macOS 14 (Sonoma) or newer recommended ([older versions may work but are not officially supported by Docker](https://docs.docker.com/desktop/install/mac-install/))
 - [ ] Administrator access to install software
 - [ ] At least 4GB RAM (8GB recommended)
-- [ ] At least 2GB free disk space
-- [ ] Active internet connection
+- [ ] At least 4GB free disk space
 
 ---
 
@@ -50,6 +49,8 @@ git version 2.45.2
 
 ### 2.2 Install Git (if needed)
 
+Follow the official instructions:
+
 https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
 https://git-scm.com/install/mac
@@ -70,7 +71,7 @@ You should now see the Git version number.
 
 ## Step 3: Install Docker Desktop
 
-Docker runs the RL Lab application in an isolated environment, so you don't need to manually install Python, Node.js, or other dependencies.
+Docker runs the RL Lab application in an isolated environment, so you don't need to manually install Python, Node.js, or other dependencies. 
 
 ### 3.1 Download Docker Desktop
 
@@ -219,11 +220,12 @@ Press Enter and wait...
 
 **When ready, you'll see**:
 ```
-✔ Container workshop-rl1-introduction-backend   Started
-✔ Container workshop-rl1-introduction-frontend  Started
+username@Mac workshop-rl1-introduction % docker compose up -d
+[+] Running 3/3
+ ✔ Network workshop-rl1-introduction_rl-network  Created                                                                                                                                                                                                                                              0.0s 
+ ✔ Container workshop-rl1-introduction-backend   Started                                                                                                                                                                                                                                              5.3s 
+ ✔ Container workshop-rl1-introduction-frontend  Started  
 ```
-
-![Docker compose running](installation-screenshots/macos/10-docker-compose-up.png)
 
 **✅ Success**: Your terminal is now free to use for other commands! The services are running in the background (detached mode with `-d`).
 
@@ -250,10 +252,9 @@ This shows live logs from both services. Press `Control + C` to stop viewing log
 2. In the address bar, type: **`http://localhost:3030`**
 3. Press Enter
 
-**✅ Success!** You should see the RL Lab interface with:
-- Parameter controls on the left
-- Environment viewer in the center
-- Visualization panels on the right
+**✅ Success!** You should see the RL Lab interface:
+
+![Application Screenshot](../docs/screenshots/app/main-interface.png)
 
 ---
 
@@ -341,19 +342,16 @@ The `COMMAND` column already shows you what's running (e.g., `node`, `python`, `
 
 **Step 3 - Stop the process:**
 
-**Method A** - Graceful stop (try this first):
+(If it is a docker container, try listing containers first: `docker ps` and stop with `docker stop <container_id>`)
+
+Otherwise, try this command to kill the process:
+
 ```bash
 kill 12345
 ```
 
 Replace `12345` with your actual PID.
 
-**Method B** - Force stop (if graceful doesn't work):
-```bash
-kill -9 12345
-```
-
-The `-9` flag forces immediate termination.
 
 **Step 4 - Try starting RL Lab again:**
 ```bash
@@ -364,7 +362,7 @@ docker-compose up -d
 
 If you want to keep the other application running, change RL Lab's ports:
 
-1. Open `docker-compose.yml` in a text editor (TextEdit, nano, or any editor)
+1. Open `docker-compose.yml`
 2. Find these lines:
    ```yaml
    frontend:
@@ -392,16 +390,6 @@ If you want to keep the other application running, change RL Lab's ports:
 **Common culprits using these ports**:
 - **Port 3030**: Less common, but could conflict with other services
 - **Port 5001**: Flask apps, other Python servers, **macOS AirPlay Receiver** (very common!)
-- **Port 7000**: macOS Control Center may use nearby ports
-
-**Special note for macOS users**: Port 5000 and 5001 are often used by **AirPlay Receiver**. To disable:
-1. Open **System Settings** (or System Preferences)
-2. Go to **General** → **AirDrop & Handoff** (or **Sharing** on older macOS)
-3. Uncheck **AirPlay Receiver**
-
-Alternatively, just use Option 2 above to change RL Lab's backend port to 5002.
-
-Also check for other Docker containers: `docker ps`
 
 ### Browser shows "This site can't be reached"
 **Solutions**:
@@ -411,12 +399,6 @@ Also check for other Docker containers: `docker ps`
 4. Check Docker Desktop is running (look for whale icon in menu bar)
 5. View logs for error messages: `docker-compose logs`
 
-### Training doesn't start or shows errors
-**Solutions**:
-1. View logs for backend error messages: `docker-compose logs backend`
-2. Try clicking "Reset" and then "Start Training" again
-3. Refresh the browser page
-
 ### Apple Silicon (M1/M2/M3) Performance Issues
 **Symptoms**: Slow performance or warnings about architecture
 
@@ -425,22 +407,3 @@ Also check for other Docker containers: `docker ps`
 2. In Docker Desktop settings, ensure "Use Rosetta for x86/amd64 emulation on Apple Silicon" is checked
 3. Restart Docker Desktop
 
----
-
-## Next Steps
-
-✅ **Installation complete!** You're ready to explore reinforcement learning.
-
-**Learn More**:
-- [README.md](../README.md) - Project overview and features
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical details about how RL Lab works
-- [Docker Workflow Guide](../tutorials/docker-workflow.md) - Advanced Docker usage
-
-**Need Help?**
-- Check the troubleshooting section above
-- Ask your workshop instructor
-- Open an issue on GitHub: https://github.com/aihpi/workshop-rl1-introduction/issues
-
----
-
-**🎓 Ready to learn? Start experimenting with different parameters and see how they affect the agent's learning!**
