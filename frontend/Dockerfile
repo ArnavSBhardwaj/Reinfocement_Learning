@@ -1,5 +1,5 @@
-# Use Node.js 18 (LTS - Long Term Support)
-FROM node:18
+# Use Node.js 18 alpine (Version 18 is outdated in december 2025! We need to update but will leave it for the workshop on 10.12.25)
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
