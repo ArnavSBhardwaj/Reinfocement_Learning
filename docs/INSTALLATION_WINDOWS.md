@@ -4,7 +4,6 @@
 
 Before you begin, make sure you have:
 
-- [ ] Windows 10 64-bit (version 1903 or higher) or Windows 11
 - [ ] Administrator access to install software
 - [ ] At least 4GB RAM (8GB recommended)
 - [ ] At least 4GB free disk space
@@ -35,6 +34,15 @@ The Command Prompt (also called "terminal" or "cmd") is where you'll type comman
 ## Step 2: Install Git for Windows
 
 Git is a tool that helps you download code from the internet (like this project).
+
+Check if Git is already installed:
+1. In the Command Prompt, type:
+   ```bash
+   git --version
+   ```
+2. Press Enter
+
+**If you see a version number (e.g., git version 2.43.0)**: ✅ Git is already installed! Skip to Step 3.
 
 ### 2.1 Download Git
 
@@ -248,7 +256,7 @@ Before continuing, check that Docker Desktop is running:
 
 In Command Prompt (make sure you're still in the `workshop-rl1-introduction` folder), type:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 Press Enter and wait...
@@ -266,7 +274,7 @@ Press Enter and wait...
 
 **When ready, you'll see**:
 ```
-C:\Users\YourName\workshop-rl1-introduction> docker-compose up -d
+C:\Users\YourName\workshop-rl1-introduction> docker compose up -d
 [+] Running 3/3
  ✔ Network workshop-rl1-introduction_rl-network  Created                                                                                                                                                                                                                                              0.0s
  ✔ Container workshop-rl1-introduction-backend   Started                                                                                                                                                                                                                                              5.3s
@@ -279,7 +287,7 @@ C:\Users\YourName\workshop-rl1-introduction> docker-compose up -d
 **💡 Viewing logs** (optional, for debugging):
 If you need to see what's happening or debug issues, open a **separate Command Prompt** and run:
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```
 This shows live logs from both services. Press `Ctrl + C` to stop viewing logs (the services keep running).
 
@@ -324,13 +332,13 @@ When you're done using RL Lab:
 
 1. Open Command Prompt (if you closed it)
 2. Navigate to the project folder: `cd %USERPROFILE%\Desktop\workshop-rl1-introduction`
-3. Run: `docker-compose down`
+3. Run: `docker compose down`
 4. Wait for the containers to stop (you'll see "Stopped" and "Removed" messages)
 
 To start again later, just:
 1. Open Command Prompt
 2. Navigate to the project folder: `cd %USERPROFILE%\Desktop\workshop-rl1-introduction`
-3. Run: `docker-compose up -d`
+3. Run: `docker compose up -d`
 
 ---
 
@@ -405,7 +413,7 @@ Replace `12345` with your actual PID. The `/F` flag forces termination.
 
 **Step 4 - Try starting RL Lab again:**
 ```cmd
-docker-compose up -d
+docker compose up -d
 ```
 
 #### **Option 2: Change RL Lab's Ports** (If you need both applications running)
@@ -434,7 +442,7 @@ If you want to keep the other application running, change RL Lab's ports:
    ```
 
 4. Save the file
-5. Start RL Lab: `docker-compose up -d`
+5. Start RL Lab: `docker compose up -d`
 6. Access at the new port: `http://localhost:3001`
 
 **Common culprits using these ports**:
@@ -444,7 +452,7 @@ If you want to keep the other application running, change RL Lab's ports:
 
 ### Browser shows "This site can't be reached"
 **Solutions**:
-1. Make sure Docker containers are running: `docker-compose ps`
+1. Make sure Docker containers are running: `docker compose ps`
 2. Wait a bit longer - first startup can take 2-3 minutes
 3. Try refreshing the browser
 4. Check Docker Desktop is running
