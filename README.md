@@ -105,22 +105,6 @@ docker compose restart         # Restart services
 
 4. **Play policy**: After training completes, click "Play Policy" to watch the trained agent execute its learned behavior step-by-step.
 
-## Testing
-
-**Backend** (8 tests, 41% coverage):
-```bash
-# Locally
-cd backend && uv run pytest
-
-# In Docker
-docker compose exec backend pytest
-```
-
-**Frontend** (12 tests):
-```bash
-cd frontend && npm test
-```
-
 ## Hands-On Coding (Optional)
 
 Want to implement Q-Learning yourself? After using RL Lab to build intuition, try the Jupyter notebook in the examples directory to implement Q-Learning yourself and see how the code works.
