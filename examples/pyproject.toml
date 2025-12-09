@@ -1,0 +1,12 @@
+[project]
+name = "workshop-rl1-examples"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "gymnasium>=0.29.0",  # Match backend
+    "numpy>=1.24.0",       # Match backend
+    "pygame>=2.1.0",       # Match backend - for FrozenLake rendering
+    "matplotlib>=3.7.0",   # Visualization
+    "jupyterlab>=4.0.0",   # Jupyter Lab interface
+    "ipykernel>=6.25.0",   # Kernel for notebooks
+]

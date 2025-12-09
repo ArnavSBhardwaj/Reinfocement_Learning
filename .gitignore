@@ -60,3 +60,9 @@ dist/
 # Logs
 *.log
 logs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+.jupyter/
+.local/

@@ -121,6 +121,14 @@ docker compose exec backend pytest
 cd frontend && npm test
 ```
 
+## Hands-On Coding (Optional)
+
+Want to implement Q-Learning yourself? After using RL Lab to build intuition, try the Jupyter notebook in the examples directory to implement Q-Learning yourself and see how the code works.
+
+Instructions for how to get the notebooks running are in [`examples/README.md`](examples/README.md).
+
+![Notebook Screenshot](docs/screenshots/app/notebook-QL-FrozenLake.png)
+
 ## Repository Structure
 
 ```
