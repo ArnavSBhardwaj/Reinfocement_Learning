@@ -53,20 +53,14 @@ docker compose up -d
 <td align="center" width="33%">
 <h3>📱 Windows</h3>
 <p><strong><a href="docs/INSTALLATION_WINDOWS.md">Windows Installation Guide</a></strong></p>
-<p>For Windows 10/11</p>
-<p><em>~10-15 minutes</em></p>
 </td>
 <td align="center" width="33%">
 <h3>🍎 macOS</h3>
 <p><strong><a href="docs/INSTALLATION_MACOS.md">macOS Installation Guide</a></strong></p>
-<p>For macOS 10.15+</p>
-<p><em>~10-15 minutes</em></p>
 </td>
 <td align="center" width="33%">
 <h3>🐧 Linux</h3>
 <p><strong><a href="docs/INSTALLATION_LINUX.md">Linux Installation Guide</a></strong></p>
-<p>For Ubuntu/Debian</p>
-<p><em>~15-20 minutes</em></p>
 </td>
 </tr>
 </table>
